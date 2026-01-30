@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(C:/Users/adria/AppData/Local/Temp/claude/C--Users-adria-Programacion-Proyectos-OneStar-lasorianita-nextjs/5a685624-b646-4330-8ef7-23fa8a42fd35/scratchpad/fontvenv/bin/pip install:*)",
+      "Bash(winget install:*)",
+      "Bash(\"/c/Users/adria/AppData/Local/Programs/Python/Python312/python.exe\" -m pip install fonttools brotli)",
+      "Bash(PYTHON=\"/c/Users/adria/AppData/Local/Programs/Python/Python312/python.exe\":*)",
+      "Bash(FONTS_DIR=\"C:/Users/adria/Programacion/Proyectos OneStar/lasorianita-nextjs/public/fonts\":*)",
+      "Bash(\"$PYTHON\" -c \"\nfrom fontTools.ttLib import TTFont\nimport os, glob\n\nfonts_dir = r''$FONTS_DIR''\n# Manually list the TTF files\nttf_files = [\n    os.path.join\\(fonts_dir, ''Instrument_Serif'', ''InstrumentSerif-Regular.ttf''\\),\n    os.path.join\\(fonts_dir, ''STIX_Two_Text'', ''STIXTwoText-Italic-VariableFont_wght.ttf''\\),\n    os.path.join\\(fonts_dir, ''STIX_Two_Text'', ''STIXTwoText-Italic.ttf''\\),\n    os.path.join\\(fonts_dir, ''Inter'', ''Inter-VariableFont_opsz,wght.ttf''\\),\n    os.path.join\\(fonts_dir, ''Pinyon_Script'', ''PinyonScript-Regular.ttf''\\),\n]\n\nfor ttf_path in ttf_files:\n    woff2_path = ttf_path.rsplit\\(''.'', 1\\)[0] + ''.woff2''\n    print\\(f''Converting: {os.path.basename\\(ttf_path\\)} -> {os.path.basename\\(woff2_path\\)}''\\)\n    font = TTFont\\(ttf_path\\)\n    font.flavor = ''woff2''\n    font.save\\(woff2_path\\)\n    font.close\\(\\)\n    ttf_size = os.path.getsize\\(ttf_path\\)\n    woff2_size = os.path.getsize\\(woff2_path\\)\n    ratio = \\(1 - woff2_size/ttf_size\\) * 100\n    print\\(f''  {ttf_size:,} bytes -> {woff2_size:,} bytes \\({ratio:.1f}% smaller\\)''\\)\n\nprint\\(''Done! All fonts converted.''\\)\n\")"
+    ]
+  }
+}

@@ -1,26 +1,113 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
   --foreground: #171717;
+  --soria-red: #6d1726;
+  --soria-bg: #FDFBF7;
+  --soria-cream: #F5E6CA;
+  --soria-dark: #1a1a1a;
+
+  /*===== PADDINGS RESPONSIVOS =====*/
+  --padding-mobile: 1rem;
+  --padding-tablet: 1.25rem;
+  --padding-desktop: 1.5rem;
+}
+/*======== FONTS =========*/
+@font-face {
+  font-family: 'font-sans';
+  src: url('../../public/fonts/Inter/Inter-VariableFont_opsz\,wght.woff2');
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'font-serif';
+  src: url('../../public/fonts/Instrument_Serif/InstrumentSerif-Regular.woff2');
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'font-serif';
+  src: url('../../public/fonts/Instrument_Serif/InstrumentSerif-Italic.woff2');
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'font-math';
+  src: url('../../public/fonts/STIX_Two_Text/STIXTwoText-Italic-VariableFont_wght.woff2');
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'font-math';
+  src: url('../../public/fonts/STIX_Two_Text/STIXTwoText-Italic-VariableFont_wght.woff2');
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: 'font-script';
+  src: url('../../public/fonts/Pinyon_Script/PinyonScript-Regular.woff2');
+  font-style: italic;
+  font-display: swap;
 }
 
 @theme inline {
-  --color-background: var(--background);
+  --color-background: var(--soria-bg);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-soria-red: var(--soria-red);
+  --font-sans: 'font-sans', Arial, Helvetica, sans-serif;
+  --font-serif: 'font-serif', Georgia, serif;
+  --font-math: 'font-math', 'Times New Roman', serif;
+  --font-script: 'font-script', cursive;
 }
 
-@media (prefers-color-scheme: dark) {
+/* @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+} */
+@layer components {
+
+  .padding-responsive {
+    @apply mx-auto max-w-7xl;
+    padding-left: var(--padding-mobile);
+    padding-right: var(--padding-mobile);
+  }
+  @media (min-width: 768px) {
+    .padding-responsive {
+      padding-left: var(--padding-tablet);
+      padding-right: var(--padding-tablet);
+    }
+  }
+  @media (min-width: 1024px) {
+    .padding-responsive {
+      padding-left: var(--padding-desktop);
+      padding-right: var(--padding-desktop);
+    }
+  }
+  /* ============================================= */
+  /*================= HEADER ====================*/
+  /* ============================================= */
+  .header{
+    @apply fixed top-0 left-0 right-0 w-full z-60 bg-background shadow-md transition-transform duration-300 ease-in-out;
+  }
+  .main-header{
+    @apply z-70 flex justify-between items-center h-15 md:h-20;
+  }
+  .ig-header-button{
+    @apply bg-soria-red text-white text-sm font-medium px-6 py-2.5 hover:bg-red-900 transition-all shadow-sm inline-block rounded-xs
+  }
+  .header-logo{
+    @apply flex flex-row items-center gap-2 select-none cursor-pointer hover:opacity-80 transition-opacity
+  }
 }
 
 body {
-  background: var(--background);
+  background: var(--soria-bg);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-serif);
+  }
 }
