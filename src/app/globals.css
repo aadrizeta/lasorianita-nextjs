@@ -68,6 +68,9 @@
 } */
 @layer components {
 
+  .col-center{
+    @apply flex flex-col justify-center items-center
+  }
   .padding-responsive {
     @apply mx-auto max-w-7xl;
     padding-left: var(--padding-mobile);
@@ -99,6 +102,15 @@
   }
   .header-logo{
     @apply flex flex-row items-center gap-2 select-none cursor-pointer hover:opacity-80 transition-opacity
+  }
+  /* ============================================= */
+  /*================= MAIN - HERO SECTION =========*/
+  /* ============================================= */
+  .main-button{
+    @apply relative overflow-hidden bg-transparent hover:bg-white hover:text-soria-red transition-all duration-500 ease-out text-white border border-white/30 py-2 px-5 md:px-8 md:py-3.5 inline-block text-xs md:text-sm font-medium tracking-[0.2em] z-10;
+  }
+  .side-bars{
+    @apply h-px w-10 md:w-16 bg-white/40
   }
 }
 
