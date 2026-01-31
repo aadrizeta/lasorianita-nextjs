@@ -4,6 +4,7 @@ import '@/app/globals.css';
 import { useEffect, useState, useRef } from "react";
 import NavBar from '@/components/ui/header/navbar';
 import HeaderLogo from '@/components/ui/header/header-logo';
+import IgLogo from '@/components/ui/header/ig-logo';
 
 export default function Header() {
 
@@ -30,6 +31,7 @@ export default function Header() {
             <div className='main-header padding-responsive'>
                 <HeaderLogo />
                 <NavBar />
+                <IgLogo />
             </div>
         </header>
     );
