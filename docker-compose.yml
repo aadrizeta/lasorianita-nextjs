@@ -1,6 +1,6 @@
 services:
   app:
-    image: ghcr.io/aadrizeta/lasorianita-nextjs:latest
+    build: .
     container_name: lasorianita
     restart: unless-stopped
     ports:
