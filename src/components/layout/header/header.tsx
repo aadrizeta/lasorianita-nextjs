@@ -1,6 +1,5 @@
 'use client'
 
-import '@/app/globals.css';
 import { useEffect, useState, useRef } from "react";
 import NavBar from '@/components/ui/header/navbar';
 import HeaderLogo from '@/components/ui/header/header-logo';

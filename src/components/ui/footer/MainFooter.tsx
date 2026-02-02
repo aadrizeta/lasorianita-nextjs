@@ -1,5 +1,3 @@
-import '@/app/globals.css';
-
 export default function MainFooter() {
     return (
         <div className='padding-responsive col-center gap-20 md:gap-10 md:flex-row md:justify-between lg:items-stretch py-10'>

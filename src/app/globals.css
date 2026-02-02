@@ -12,53 +12,15 @@
   --padding-tablet: 1.25rem;
   --padding-desktop: 1.5rem;
 }
-/*======== FONTS =========*/
-@font-face {
-  font-family: 'font-sans';
-  src: url('../../public/fonts/Inter/Inter-VariableFont_opsz\,wght.woff2');
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'font-serif';
-  src: url('../../public/fonts/Instrument_Serif/InstrumentSerif-Regular.woff2');
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'font-serif';
-  src: url('../../public/fonts/Instrument_Serif/InstrumentSerif-Italic.woff2');
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'font-math';
-  src: url('../../public/fonts/STIX_Two_Text/STIXTwoText-Italic-VariableFont_wght.woff2');
-  font-style: normal;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'font-math';
-  src: url('../../public/fonts/STIX_Two_Text/STIXTwoText-Italic-VariableFont_wght.woff2');
-  font-style: italic;
-  font-display: swap;
-}
-@font-face {
-  font-family: 'font-script';
-  src: url('../../public/fonts/Pinyon_Script/PinyonScript-Regular.woff2');
-  font-style: italic;
-  font-display: swap;
-}
-
 @theme inline {
   --color-background: var(--soria-bg);
   --color-foreground: var(--foreground);
   --color-soria-red: var(--soria-red);
   --color-soria-cream: var(--soria-cream);
-  --font-sans: 'font-sans', Arial, Helvetica, sans-serif;
-  --font-serif: 'font-serif', Georgia, serif;
-  --font-math: 'font-math', 'Times New Roman', serif;
-  --font-script: 'font-script', cursive;
+  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
+  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-math: var(--font-stix), 'Times New Roman', serif;
+  --font-script: var(--font-pinyon), cursive;
 }
 
 /* @media (prefers-color-scheme: dark) {

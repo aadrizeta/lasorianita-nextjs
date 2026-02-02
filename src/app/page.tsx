@@ -1,4 +1,3 @@
-import '@/app/globals.css';
 import HeroSection from "@/components/layout/hero-section/hero-section";
 import ScrollStrip from "@/components/ui/scroll-main/scroll-strip";
 import Legado from '@/components/layout/about-us/legado-section';

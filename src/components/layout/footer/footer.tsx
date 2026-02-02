@@ -1,4 +1,3 @@
-import '@/app/globals.css';
 import SubFooter from '@/components/ui/footer/subFooter';
 import MainFooter from '@/components/ui/footer/MainFooter';
 

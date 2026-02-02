@@ -1,4 +1,3 @@
-import '@/app/globals.css';
 import Image from 'next/image';
 import Link from 'next/link';
 export default function HeaderLogo() {

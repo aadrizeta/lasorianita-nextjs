@@ -1,4 +1,3 @@
-import '@/app/globals.css'
 import Wallpaper from '@/components/ui/about-us/wallpaper';
 
 export default function Legado() {

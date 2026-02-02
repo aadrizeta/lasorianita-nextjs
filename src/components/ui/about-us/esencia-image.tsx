@@ -10,6 +10,8 @@ export default function EsenciaImage() {
                     alt="Croissants | La Sorianita"
                     width={384}
                     height={700}
+                    loading="lazy"
+                    sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 512px"
                     className='block h-auto w-full object-cover shadow-2xl'
                 />
 

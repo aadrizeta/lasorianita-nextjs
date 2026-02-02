@@ -1,4 +1,3 @@
-import '@/app/globals.css';
 import EsenciaImage from '@/components/ui/about-us/esencia-image';
 
 export default function Esencia() {

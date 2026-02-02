@@ -12,7 +12,12 @@
       "Bash(netstat:*)",
       "Bash(findstr:*)",
       "Bash(taskkill:*)",
-      "Bash(cmd //c \"taskkill /PID 23680 /F\")"
+      "Bash(cmd //c \"taskkill /PID 23680 /F\")",
+      "Bash(curl:*)",
+      "Bash(docker stop:*)",
+      "Bash(docker rm:*)",
+      "Bash(ls:*)",
+      "Bash(.png \")"
     ]
   }
 }

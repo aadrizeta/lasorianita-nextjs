@@ -1,4 +1,3 @@
-import '@/app/globals.css';
 import Image from 'next/image';
 
 export default function Wallpaper() {
@@ -10,6 +9,8 @@ export default function Wallpaper() {
                 alt="La Sorianita | Wallpaper"
                 width={384}
                 height={700}
+                loading="lazy"
+                sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 512px"
                 className='block h-auto w-full object-cover shadow-2xl'
             />
         </div>

@@ -1,6 +1,5 @@
 'use client';
 
-import '@/app/globals.css';
 import { useRef, useEffect, useState } from 'react';
 
 export default function ScrollStrip() {
