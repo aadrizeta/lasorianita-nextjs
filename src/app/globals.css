@@ -54,6 +54,7 @@
   --color-background: var(--soria-bg);
   --color-foreground: var(--foreground);
   --color-soria-red: var(--soria-red);
+  --color-soria-cream: var(--soria-cream);
   --font-sans: 'font-sans', Arial, Helvetica, sans-serif;
   --font-serif: 'font-serif', Georgia, serif;
   --font-math: 'font-math', 'Times New Roman', serif;
@@ -111,6 +112,58 @@
   }
   .side-bars{
     @apply h-px w-10 md:w-16 bg-white/40
+  }
+
+  /* ============================================= */
+  /* ============= SCROLL-STRIP MAIN ============= */
+  /* ============================================= */
+  @keyframes scrollLeft {
+    to {
+      transform: translateX(-100%);
+    }
+  }
+  .scroll-strip{
+    @apply flex gap-12 select-none overflow-hidden border-stone-200/50 border-b py-5 bg-background;
+  }
+  .scroll-content{
+    @apply flex shrink-0 gap-12 items-center whitespace-nowrap min-w-full justify-evenly;
+    animation: scrollLeft 80s linear infinite;
+  }
+  .scroll-content.paused{
+    animation-play-state: paused;
+  }
+  .strip-dot{
+    @apply text-[10px] text-stone-300;
+  }
+  .strip-text{
+    @apply text-soria-red font-medium tracking-[0.2em] text-xs;
+  }
+  /* ============================================= */
+  /* =============== LEGADO SECTION ============== */
+  /* ============================================= */
+  .legado-text{
+    @apply text-lg text-stone-600 font-sans leading-relaxed;
+  }
+  /* ============================================= */
+  /* ============ FEATURES SECTION ================*/
+  /* ============================================= */
+  .feature{
+    @apply px-4 pt-8 md:pt-0 gap-5;
+  }
+  .feature-text{
+    @apply text-white/80 font-sans leading-relaxed mb-2;
+  }
+  /* ============================================= */
+  /* ============ ESENCIA SECTION ================ */
+  /* ============================================= */
+  .esencia-group{
+    @apply py-10 grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 border-t border-stone-200;
+  }
+  .esencia-title{
+    @apply font-serif text-2xl text-stone-900;
+  }
+  .esencia-text{
+    @apply text-stone-600 font-sans leading-relaxed;
   }
 }
 
