@@ -7,6 +7,7 @@ import Esencia from '@/components/layout/about-us/esencia-section';
 export default function Home() {
   return (
     <>
+      <div className="h-15 md:h-20 bg-soria-red" />
       <HeroSection />
       <ScrollStrip />
       <div className="bg-background py-24">

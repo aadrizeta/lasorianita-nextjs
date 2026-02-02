@@ -3,6 +3,7 @@ import { Inter, Instrument_Serif, STIX_Two_Text, Pinyon_Script } from "next/font
 import "./globals.css";
 import Header from "@/components/layout/header/header";
 import Footer from "@/components/layout/footer/footer";
+import ScrollToTop from "@/components/ui/scroll-to-top";
 
 const inter = Inter({
   variable: "--nf-sans",
@@ -53,11 +54,11 @@ export default function RootLayout({
     <html lang="es" className={`scroll-smooth ${inter.variable} ${instrumentSerif.variable} ${stixTwoText.variable} ${pinyonScript.variable}`}>
       <body>
         <Header />
-        <div className="h-15 md:h-20 bg-soria-red" />
         <main>
           {children}
         </main>
         <Footer />
+        <ScrollToTop />
       </body>
     </html>
   );

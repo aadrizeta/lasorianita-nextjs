@@ -10,11 +10,11 @@ export default function MainFooter() {
                 <div className='flex flex-row justify-between'>
                     <div className='flex flex-col font-sans text-soria-cream'>
                         <span className="md:text-lg">TELÉFONO</span>
-                        <span className="md:text-xl">+34 605 467 989</span>
+                        <a href="tel:+34605467989" className="md:text-xl hover:text-white transition-colors">+34 605 467 989</a>
                     </div>
                     <div className='flex flex-col font-sans text-soria-cream'>
                         <span className="md:text-lg">EMAIL</span>
-                        <span className="md:text-xl">info@lasorianita.es</span>
+                        <a href="mailto:info@lasorianita.es" className="md:text-xl hover:text-white transition-colors" target="_blank">info@lasorianita.es</a>
                     </div>
                 </div>
                 <span className='text-xs text-white/40 font-sans flex justify-between'>© 2024 LA SORIANITA | OBRADOR ARTESANAL</span>
