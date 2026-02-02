@@ -10,7 +10,6 @@ export default function Wallpaper() {
                 width={384}
                 height={700}
                 loading="lazy"
-                fetchPriority='high'
                 sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 512px"
                 className='block h-auto w-full object-cover shadow-2xl'
             />
