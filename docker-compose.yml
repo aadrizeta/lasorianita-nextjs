@@ -1,0 +1,12 @@
+services:
+  app:
+    image: ghcr.io/aadrizeta/lasorianita-nextjs:latest
+    container_name: lasorianita
+    restart: unless-stopped
+    networks:
+      - proxy
+
+networks:
+  proxy:
+    external: true
+    name: matching-matcha-web-nextjs_default

@@ -10,7 +10,7 @@ export default function EsenciaImage() {
                     alt="Croissants | La Sorianita"
                     width={384}
                     height={700}
-                    className='block h-auto w-full object-cover shadow-2xl grayscale'
+                    className='block h-auto w-full object-cover shadow-2xl'
                 />
 
                 <div className="absolute bottom-0 right-0 bg-soria-red text-white p-8 pr-12 z-10 w-[80%] max-w-70">

@@ -12,8 +12,8 @@ export default function Home() {
       <ScrollStrip />
       <div className="bg-background py-24">
         <h2 className='col-center gap-2 text-center text-5xl md:text-6xl lg:text-8xl'>
-          <section className='text-soria-red'>Nueva Imagen</section>
-          <section className='font-math italic'>Sabor de toda la vida</section>
+          <span className='text-soria-red'>Nueva Imagen</span>
+          <span className='font-math italic'>Sabor de toda la vida</span>
         </h2>
         <div className="w-24 h-0.5 bg-soria-red mx-auto opacity-20 mt-3"></div>
       </div>
