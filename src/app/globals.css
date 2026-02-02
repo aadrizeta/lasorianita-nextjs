@@ -17,10 +17,10 @@
   --color-foreground: var(--foreground);
   --color-soria-red: var(--soria-red);
   --color-soria-cream: var(--soria-cream);
-  --font-sans: var(--font-inter), Arial, Helvetica, sans-serif;
-  --font-serif: var(--font-instrument-serif), Georgia, serif;
-  --font-math: var(--font-stix), 'Times New Roman', serif;
-  --font-script: var(--font-pinyon), cursive;
+  --font-sans: var(--nf-sans), Arial, Helvetica, sans-serif;
+  --font-serif: var(--nf-serif), Georgia, serif;
+  --font-math: var(--nf-math), 'Times New Roman', serif;
+  --font-script: var(--nf-script), cursive;
 }
 
 /* @media (prefers-color-scheme: dark) {

@@ -1,0 +1,77 @@
+PLAN: Optimizar rendimiento mobile (LCP, FCP, cadena de fuentes)
+================================================================
+
+PROBLEMA RAIZ
+-------------
+Las fuentes se cargan via @font-face manual en CSS, generando una cadena de
+solicitudes criticas: HTML -> CSS -> Archivos de fuente (hasta 1494ms de latencia).
+Ademas, la imagen hero (elemento LCP) no tiene `priority`, asi que no se precarga.
+
+
+CAMBIOS A REALIZAR
+===================
+
+1. src/app/layout.tsx - Migrar a next/font/google                    
+---------------------------------------------------------------------------
+Importar las 4 fuentes con next/font/google y aplicar CSS variables al <html>:
+
+  - Inter         -> variable: "--nf-sans",   preload: true,  adjustFontFallback: true
+  - Instrument_Serif -> variable: "--nf-serif",  weight: ["400"], style: ["normal","italic"], preload: true, adjustFontFallback: true
+  - STIX_Two_Text -> variable: "--nf-math",   preload: false, adjustFontFallback: false
+  - Pinyon_Script -> variable: "--nf-script",  weight: ["400"], preload: false, adjustFontFallback: false
+
+Las variables usan prefijo --nf- para evitar conflicto circular con las variables
+Tailwind --font-*.
+
+Aplicar las clases de variable al <html>:
+  className={`scroll-smooth ${inter.variable} ${instrumentSerif.variable} ${stixTwoText.variable} ${pinyonScript.variable}`}
+
+
+2. src/app/globals.css - Eliminar @font-face, actualizar @theme      
+---------------------------------------------------------------------------
+- ELIMINAR las 6 declaraciones @font-face (antiguas lineas 15-51)
+- ACTUALIZAR @theme inline para referenciar las nuevas CSS variables:
+
+  --font-sans: var(--nf-sans), Arial, Helvetica, sans-serif;
+  --font-serif: var(--nf-serif), Georgia, serif;
+  --font-math: var(--nf-math), 'Times New Roman', serif;
+  --font-script: var(--nf-script), cursive;
+
+
+3. src/components/layout/hero-section/hero-section.tsx - Priorizar imagen LCP  
+---------------------------------------------------------------------------
+Agregar `priority` al <Image> del hero:
+
+  <Image src="/logos/Logo-h1.png" alt="..." width={600} height={300} priority />
+
+
+4. Eliminar public/fonts/                                            
+---------------------------------------------------------------------------
+Los archivos de fuente locales ya no se necesitan. next/font/google auto-hospeda
+las fuentes optimizadas en /_next/static/media/.
+
+
+5. Verificar build (next build sin errores)                          
+---------------------------------------------------------------------------
+El usuario ejecutará pnpm dev
+
+
+VERIFICACION FINAL (tras build exitoso)
+========================================
+1. next build sin errores
+2. DevTools Network: preload para Inter e Instrument Serif, no preload para STIX/Pinyon
+3. Fuentes servidas desde /_next/static/media/ (no /public/fonts/)
+4. Verificacion visual: todas las fuentes renderizan correctamente
+5. PageSpeed Insights: sin warning de cadena critica, mejora en LCP
+
+
+IMPACTO ESPERADO
+=================
+| Metrica                | Antes                          | Despues                              |
+|------------------------|--------------------------------|--------------------------------------|
+| Inter                  | 341KB completo                 | ~30-40KB (subconjunto latin)         |
+| Cadena critica         | HTML->CSS->Fuentes (1494ms)    | Fuentes en paralelo via preload      |
+| LCP                    | Imagen lazy + cadena fuentes   | Imagen preload + fuentes paralelas   |
+| CLS                    | Cambio por swap de fuentes     | Minimizado con adjustFontFallback    |
+| Fuentes no criticas    | Todas bloquean render          | STIX/Pinyon diferidas                |
+| Payload total fuentes  | ~570KB+                        | ~100KB estimado                      |

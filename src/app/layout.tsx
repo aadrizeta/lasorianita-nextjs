@@ -1,42 +1,42 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
+import { Inter, Instrument_Serif, STIX_Two_Text, Pinyon_Script } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/header/header";
 import Footer from "@/components/layout/footer/footer";
 
-const inter = localFont({
-  src: "../../public/fonts/Inter/Inter-VariableFont_opsz,wght.woff2",
-  variable: "--font-inter",
+const inter = Inter({
+  variable: "--nf-sans",
+  subsets: ["latin"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
-const instrumentSerif = localFont({
-  src: [
-    {
-      path: "../../public/fonts/Instrument_Serif/InstrumentSerif-Regular.woff2",
-      style: "normal",
-    },
-    {
-      path: "../../public/fonts/Instrument_Serif/InstrumentSerif-Italic.woff2",
-      style: "italic",
-    },
-  ],
-  variable: "--font-instrument-serif",
+const instrumentSerif = Instrument_Serif({
+  variable: "--nf-serif",
+  weight: ["400"],
+  style: ["normal", "italic"],
+  subsets: ["latin"],
   display: "swap",
+  preload: true,
+  adjustFontFallback: true,
 });
 
-const stixTwoText = localFont({
-  src: "../../public/fonts/STIX_Two_Text/STIXTwoText-Italic-VariableFont_wght.woff2",
-  variable: "--font-stix",
+const stixTwoText = STIX_Two_Text({
+  variable: "--nf-math",
+  subsets: ["latin"],
   display: "swap",
   preload: false,
+  adjustFontFallback: false,
 });
 
-const pinyonScript = localFont({
-  src: "../../public/fonts/Pinyon_Script/PinyonScript-Regular.woff2",
-  variable: "--font-pinyon",
+const pinyonScript = Pinyon_Script({
+  variable: "--nf-script",
+  weight: ["400"],
+  subsets: ["latin"],
   display: "swap",
   preload: false,
+  adjustFontFallback: false,
 });
 
 export const metadata: Metadata = {
