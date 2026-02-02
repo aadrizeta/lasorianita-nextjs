@@ -11,6 +11,7 @@ export default function HeroSection() {
                         alt="La Sorianita - Valor Artesano"
                         width={600}
                         height={300}
+                        fetchPriority='high'
                         priority
                         sizes="(max-width: 640px) 90vw, 600px"
                     />
