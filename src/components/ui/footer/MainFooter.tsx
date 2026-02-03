@@ -10,7 +10,7 @@ export default function MainFooter() {
                 <div className='flex flex-row justify-between'>
                     <div className='flex flex-col font-sans text-soria-cream'>
                         <span className="md:text-lg">TELÉFONO</span>
-                        <a href="tel:+34605467989" className="md:text-xl hover:text-white transition-colors">+34 605 467 989</a>
+                        <a href="tel:+34605467989" className="md:text-xl hover:text-white transition-colors">+34 628 15 06 92</a>
                     </div>
                     <div className='flex flex-col font-sans text-soria-cream'>
                         <span className="md:text-lg">EMAIL</span>

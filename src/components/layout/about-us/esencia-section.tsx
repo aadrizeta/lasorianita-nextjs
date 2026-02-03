@@ -7,7 +7,7 @@ export default function Esencia() {
                 <EsenciaImage />
                 <div className='md:max-w-xl'>
                     <span className='font-serif italic text-soria-red text-xl mb-4 block'>Nuestra esencia</span>
-                    <h2 className='font-serif text-6xl md:text-7xl leading-[0.9] text-stone-900 mb-12 tracking-tight'>
+                    <h2 className='font-serif text-6xl md:text-7xl leading-[0.9] text-stone-900 tracking-tight'>
                         <span>Desde 1955</span>
                         <span className='text-soria-red italic'> en el corazón de Madrid</span>
                     </h2>
