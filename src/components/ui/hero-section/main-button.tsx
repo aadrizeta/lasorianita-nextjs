@@ -2,8 +2,8 @@ import Link from "next/link";
 
 export default function MainButton() {
     return (
-        <Link href="href">
-            <button className="main-button">VEN A DESCUBRIRNOS</button>
+        <Link href="/catalogo">
+            <button className="main-button">EXPLORA NUESTRO CATÁLOGO</button>
         </Link>
     );
 }

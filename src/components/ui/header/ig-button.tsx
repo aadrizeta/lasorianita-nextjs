@@ -1,8 +1,8 @@
 import Link from 'next/link';
 export default function IgButton() {
     return (
-        <Link href="/catalogo">
-            <button className='ig-header-button'>EXPLORA NUESTRO CATÁLOGO</button>
+        <Link href="https://www.instagram.com/pastelerialasorianita/" target='_blank'>
+            <button className='ig-header-button'>SÍGUENOS</button>
         </Link>
     );
 }

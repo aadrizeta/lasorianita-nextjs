@@ -1,0 +1,102 @@
+PAUTAS DE INDEXACION Y ANALITICAS - lasorianita.es
+===================================================
+
+1. GOOGLE SEARCH CONSOLE
+========================
+
+Registro del sitio:
+  a) Ir a https://search.google.com/search-console
+  b) Iniciar sesion con la cuenta de Google que gestionara el sitio
+  c) Seleccionar "Propiedad de dominio" e introducir: lasorianita.es
+  d) Verificar la propiedad del dominio:
+     - Opcion recomendada: registro DNS TXT en el proveedor de dominio
+     - Alternativa: subir archivo HTML a la raiz del sitio (public/)
+     - Alternativa: meta tag en el <head> del layout
+
+Envio del sitemap:
+  a) Next.js genera automaticamente el sitemap si se configura
+     - Crear archivo src/app/sitemap.ts con las rutas del sitio
+     - O usar el plugin next-sitemap
+  b) Una vez generado, ir a Search Console > Sitemaps
+  c) Enviar la URL: https://lasorianita.es/sitemap.xml
+
+Configuracion de robots.txt:
+  a) Next.js permite crearlo en src/app/robots.ts
+  b) Debe apuntar al sitemap y permitir el rastreo de las rutas publicas
+
+Seguimiento posterior:
+  - Revisar el informe de "Paginas" para ver el estado de indexacion
+  - Comprobar que no haya errores de rastreo
+  - Revisar "Experiencia de pagina" para Core Web Vitals
+
+
+2. GOOGLE ANALYTICS (GA4) CON CORREO CORPORATIVO NO-GOOGLE
+===========================================================
+
+IMPORTANTE: Para usar Google Analytics con un correo corporativo que no
+es de Gmail/@google, hay que crear primero una cuenta de Google vinculada
+a ese correo corporativo.
+
+Paso 1 - Crear cuenta de Google con correo corporativo:
+  a) Ir a https://accounts.google.com/signup
+  b) Seleccionar "Usar mi direccion de correo electronico actual"
+     (NO crear una nueva direccion de Gmail)
+  c) Introducir el correo corporativo (ej: info@lasorianita.es)
+  d) Completar la verificacion por codigo enviado a ese correo
+  e) Esto crea una cuenta de Google asociada al correo corporativo
+     sin necesidad de tener Gmail
+
+Paso 2 - Crear cuenta de Google Analytics:
+  a) Ir a https://analytics.google.com con la cuenta creada
+  b) Hacer clic en "Empezar a medir"
+  c) Nombre de la cuenta: La Sorianita (o el nombre de la empresa)
+  d) Configurar la propiedad:
+     - Nombre: lasorianita.es
+     - Zona horaria: Espana
+     - Moneda: EUR
+  e) Configurar el flujo de datos:
+     - Seleccionar "Web"
+     - URL: https://lasorianita.es
+     - Nombre del flujo: La Sorianita - Web
+  f) Copiar el ID de medicion (formato: G-XXXXXXXXXX)
+
+Paso 3 - Integrar GA4 en el proyecto Next.js:
+  a) Instalar el paquete: npm install @next/third-parties
+  b) En src/app/layout.tsx, importar y anadir el componente:
+
+     import { GoogleAnalytics } from '@next/third-parties/google'
+
+     Dentro del <html>, despues de <body>:
+     <GoogleAnalytics gaId="G-XXXXXXXXXX" />
+
+  c) Alternativa: usar variable de entorno para el ID
+     - Crear .env.local con: NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
+     - Usar: <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID!} />
+
+Paso 4 - Verificar la integracion:
+  a) Desplegar el sitio con los cambios
+  b) Ir a Google Analytics > Informes > Tiempo real
+  c) Visitar lasorianita.es y comprobar que aparece la visita
+
+
+3. ORDEN RECOMENDADO
+====================
+
+  1. Crear la cuenta de Google con el correo corporativo
+  2. Registrar el sitio en Google Search Console y verificar propiedad
+  3. Configurar sitemap.ts y robots.ts en el proyecto
+  4. Enviar el sitemap en Search Console
+  5. Crear la propiedad de Google Analytics (GA4)
+  6. Integrar GA4 en el proyecto Next.js
+  7. Desplegar y verificar que todo funciona
+
+
+4. NOTAS ADICIONALES
+====================
+
+- Google Search Console y Google Analytics se pueden vincular entre si
+  desde la seccion de Administracion de GA4 > Vinculaciones de productos
+- Considerar anadir el consentimiento de cookies (RGPD) antes de activar
+  GA4 en produccion, ya que es obligatorio en la UE
+- Para el consentimiento de cookies, librerias como cookie-consent-banner
+  o soluciones como Cookiebot pueden ser utiles
