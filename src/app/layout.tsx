@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter, Instrument_Serif, STIX_Two_Text, Pinyon_Script } from "next/font/google";
+import Script from "next/script";
 import "./globals.css";
 import Header from "@/components/layout/header/header";
 import Footer from "@/components/layout/footer/footer";
@@ -52,6 +53,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`scroll-smooth ${inter.variable} ${instrumentSerif.variable} ${stixTwoText.variable} ${pinyonScript.variable}`}>
+      <head>
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-9XDB0XDVP0"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-9XDB0XDVP0');
+          `}
+        </Script>
+      </head>
       <body>
         <Header />
         <main>
