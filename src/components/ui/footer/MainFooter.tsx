@@ -17,7 +17,7 @@ export default function MainFooter() {
                         <a href="mailto:info@lasorianita.es" className="md:text-xl hover:text-white transition-colors" target="_blank">info@lasorianita.es</a>
                     </div>
                 </div>
-                <span className='text-xs text-white/40 font-sans flex justify-between'>© 2024 LA SORIANITA | OBRADOR ARTESANAL</span>
+                <span className='text-xs text-soria-cream font-sans flex justify-between'>© 2024 LA SORIANITA | OBRADOR ARTESANAL</span>
             </div>
         </div>
     );
