@@ -10,7 +10,8 @@ export default function Wallpaper() {
                 width={384}
                 height={700}
                 loading="lazy"
-                sizes="(max-width: 768px) 90vw, (max-width: 1024px) 50vw, 512px"
+                quality={65}
+                sizes="(max-width: 768px) 85vw, (max-width: 1024px) 40vw, 384px"
                 className='block h-auto w-full object-cover shadow-2xl'
             />
         </div>

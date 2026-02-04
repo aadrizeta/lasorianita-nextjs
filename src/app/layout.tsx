@@ -53,21 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" className={`scroll-smooth ${inter.variable} ${instrumentSerif.variable} ${stixTwoText.variable} ${pinyonScript.variable}`}>
-      <head>
-        <Script
-          async
-          src="https://www.googletagmanager.com/gtag/js?id=G-9XDB0XDVP0"
-          strategy="afterInteractive"
-        />
-        <Script id="google-analytics" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', 'G-9XDB0XDVP0');
-          `}
-        </Script>
-      </head>
+      <head />
       <body>
         <Header />
         <main>
@@ -75,6 +61,18 @@ export default function RootLayout({
         </main>
         <Footer />
         <ScrollToTop />
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-9XDB0XDVP0"
+          strategy="lazyOnload"
+        />
+        <Script id="google-analytics" strategy="lazyOnload">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-9XDB0XDVP0');
+          `}
+        </Script>
       </body>
     </html>
   );
