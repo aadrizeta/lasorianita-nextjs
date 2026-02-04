@@ -14,7 +14,7 @@ export default function Esencia() {
                     <div className='esencia-group'>
                         <div className='flex flex-col gap-8'>
                             <h3 className='esencia-title'>Un Sueño en Madrid</h3>
-                            <p className='esencia-text'>La Sorianita abrió sus puertas por primera vez en Madrid en 1955. Lo que comenzó como un modesto obrador familiar en la zona de Delicias se convirtió pronto en un punto de encuentro para los amantes del buen pan. NUEVO</p>
+                            <p className='esencia-text'>La Sorianita abrió sus puertas por primera vez en Madrid en 1955. Lo que comenzó como un modesto obrador familiar en la zona de Delicias se convirtió pronto en un punto de encuentro para los amantes del buen pan.</p>
                         </div>
                         <div className='flex flex-col gap-8'>
                             <h3 className='esencia-title'>Tres Generaciones</h3>
