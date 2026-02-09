@@ -8,8 +8,8 @@
   --soria-dark: #1a1a1a;
 
   /*===== PADDINGS RESPONSIVOS =====*/
-  --padding-mobile: 2rem;
-  --padding-tablet: 2.50rem;
+  --padding-mobile: 1rem;
+  --padding-tablet: 1.5rem;
   --padding-desktop: 3rem;
 }
 @theme inline {
