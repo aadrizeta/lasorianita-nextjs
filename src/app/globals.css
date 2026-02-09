@@ -35,7 +35,7 @@
     @apply flex flex-col justify-center items-center
   }
   .padding-responsive {
-    @apply mx-auto max-w-[1350px];
+    @apply mx-auto max-w-337.5;
     padding-left: var(--padding-mobile);
     padding-right: var(--padding-mobile);
   }
