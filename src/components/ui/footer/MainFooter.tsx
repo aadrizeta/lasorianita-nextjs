@@ -3,7 +3,10 @@ export default function MainFooter() {
         <div className='padding-responsive col-center gap-20 md:gap-10 md:flex-row md:justify-between lg:items-stretch py-10'>
             <div className='col-center text-center lg:text-start'>
                 <span className='font-serif text-4xl mb-6 leading-tight text-soria-cream'>Endulzando tu día desde</span>
-                <span className='text-9xl md:text-[10rem] leading-none block -mb-8 md:-mb-12 text-soria-cream font-script opacity-90'>1955</span>
+                <div className="flex flex-row gap-5 items-end justify-center">
+                    <span className='text-9xl md:text-[10rem] leading-none block -mb-8 md:-mb-12 text-soria-cream font-script opacity-90 select-none'>1955</span>
+                    <span className="md:text-2xl md:top-6 md:right-46 text-xl text-soria-cream tracking-[0.3em] font-math right-4 pt-10">EST.</span>
+                </div>
             </div>
             <div className='w-full h-45.25 max-w-md flex flex-col justify-between gap-5'>
                 <span className="font-serif text-4xl leading-tight text-soria-cream text-center lg:text-start">Contáctanos</span>

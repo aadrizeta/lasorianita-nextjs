@@ -3,7 +3,7 @@ import MainButton from '@/components/ui/hero-section/main-button';
 
 export default function HeroSection() {
     return (
-        <section className="col-center bg-soria-red min-h-[75vh] gap-15 text-center overflow-hidden">
+        <section className="selection:bg-white col-center bg-soria-red min-h-[50vh] md:min-h-[75vh] gap-15 text-center overflow-hidden">
             <div className='col-center'>
                 <h1>
                     <Image
