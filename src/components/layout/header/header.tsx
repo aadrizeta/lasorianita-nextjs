@@ -4,9 +4,12 @@ import { useEffect, useState, useRef } from "react";
 import NavBar from '@/components/ui/header/navbar';
 import HeaderLogo from '@/components/ui/header/header-logo';
 import IgLogo from '@/components/ui/header/ig-logo';
+import BurgerMenu from "@/components/ui/header/burger-menu";
+import DropdownNav from "@/components/layout/header/dropdown-nav";
 
 export default function Header() {
 
+    const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [isVisible, setIsVisible] = useState(true);
     const lastScrollY = useRef(0);
 
@@ -26,12 +29,15 @@ export default function Header() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
     return (
-        <header className={`header ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-            <div className='main-header padding-responsive'>
-                <HeaderLogo />
-                <NavBar />
-                <IgLogo />
-            </div>
-        </header>
+        <>
+            <header className={`header ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+                <div className='main-header padding-responsive'>
+                    <HeaderLogo />
+                    <NavBar />
+                    <BurgerMenu isOpen={mobileMenuOpen} onToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
+                </div>
+            </header>
+            <DropdownNav isOpen={mobileMenuOpen} onClose={() => setMobileMenuOpen(false)} />
+        </>
     );
 }
