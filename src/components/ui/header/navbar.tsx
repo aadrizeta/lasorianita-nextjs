@@ -10,7 +10,7 @@ export default function NavBar() {
             <Link href="/encuentranos">
                 <p className='text-sm font-medium text-stone-500 hover:text-soria-red transition-colors tracking-wide uppercase'>encuéntranos</p>
             </Link>
-            <Link href="https://www.instagram.com/pastelerialasorianita/" target='_blank'>
+            <Link href="http://instagram.com/_u/{pastelerialasorianita}/" target='_blank'>
                 <p className='text-sm font-medium text-stone-500 hover:text-soria-red transition-colors tracking-wide uppercase'>Síguenos</p>
             </Link>
             <IgButton />

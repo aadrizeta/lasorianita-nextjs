@@ -55,10 +55,17 @@ export default function DropdownNav({ isOpen, onClose }: MobileMenuProps) {
                 <ul className='flex flex-col gap-6 p-6 mt-20'>
                     {Links.map((link) => {
                         const isActive = pathname === link.href;
+                        const isExternal = link.href.startsWith('http');
                         return (
                             <li key={link.name} className={`border-b border-soria-red py-2 px-2 rounded-t ${isActive ? 'bg-soria-red-light' : ''}`}>
                                 <Link href={link.href}
-                                    onClick={onClose}
+                                    onClick={(e) => {
+                                        if (isExternal) {
+                                            e.preventDefault();
+                                            window.open(link.href, '_blank', 'noopener,noreferrer');
+                                        }
+                                        onClose();
+                                    }}
                                     className={`font-math text-2xl ${isActive ? 'text-soria-red' : 'text-soria-dark'}`}
                                 >
                                     <span className='flex gap-5'>
