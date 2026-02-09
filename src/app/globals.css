@@ -3,6 +3,7 @@
 :root {
   --foreground: #171717;
   --soria-red: #6d1726;
+  --soria-red-light: #9b46541e;
   --soria-bg: #FDFBF7;
   --soria-cream: #F5E6CA;
   --soria-dark: #1a1a1a;
@@ -16,6 +17,7 @@
   --color-background: var(--soria-bg);
   --color-foreground: var(--foreground);
   --color-soria-red: var(--soria-red);
+  --color-soria-red-light: var(--soria-red-light);
   --color-soria-cream: var(--soria-cream);
   --font-sans: var(--nf-sans), Arial, Helvetica, sans-serif;
   --font-serif: var(--nf-serif), Georgia, serif;

@@ -3,7 +3,6 @@
 import { useEffect, useState, useRef } from "react";
 import NavBar from '@/components/ui/header/navbar';
 import HeaderLogo from '@/components/ui/header/header-logo';
-import IgLogo from '@/components/ui/header/ig-logo';
 import BurgerMenu from "@/components/ui/header/burger-menu";
 import DropdownNav from "@/components/layout/header/dropdown-nav";
 
