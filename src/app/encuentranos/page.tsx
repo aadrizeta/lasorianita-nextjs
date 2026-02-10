@@ -1,5 +1,7 @@
 export default function Encuentranos() {
     return (
-        <p>Hola Mundo esta es la página de Encuéntranos</p>
+        <div className="h-100 text-center font-math text-4xl mt-80">
+            <p>Coming Soon...</p>
+        </div>
     );
 }
