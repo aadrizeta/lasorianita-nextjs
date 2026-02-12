@@ -60,10 +60,7 @@ function GoogleMaps() {
     });
 
     const initMap = async () => {
-      const [{ Map }, { AdvancedMarkerElement, PinElement }] = await Promise.all([
-        importLibrary("maps") as Promise<google.maps.MapsLibrary>,
-        importLibrary("marker") as Promise<google.maps.MarkerLibrary>,
-      ]);
+      const { Map } = await importLibrary("maps") as google.maps.MapsLibrary;
 
       if (!mapRef.current) return;
 
@@ -72,25 +69,15 @@ function GoogleMaps() {
           ? { lat: 40.40134966059278, lng: -3.6992619029894174 }
           : { lat: 40.40026300780124, lng: -3.6992779962475733 },
         zoom: window.innerWidth < 1024 ? 16 : 17,
-        mapId: "DEMO_MAP_ID",
         styles: MAP_STYLES,
         clickableIcons: false,
       });
 
-      // Marcador en la ubicación del negocio
-      const pin = new PinElement({
-        background: "#E8453C",
-        borderColor: "#B8352D",
-        glyphColor: "white",
-        scale: 1.3,
-      });
-
-      const marker = new AdvancedMarkerElement({
+      new google.maps.Marker({
         position: BUSINESS_LOCATION,
         map,
         title: "Panadería La Sorianita",
       });
-      marker.append(pin);
     };
 
     initMap();
