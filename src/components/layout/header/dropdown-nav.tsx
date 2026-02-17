@@ -19,7 +19,7 @@ const Links = [
   },
   {
     name: 'Síguenos',
-    href: 'https://www.instagram.com/pastelerialasorianita/',
+    href: '/siguenos',
     icon: '/icons/instagram-borde.svg',
     activeIcon: '/icons/instagram-relleno.svg',
   },

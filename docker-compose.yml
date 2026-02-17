@@ -6,6 +6,9 @@ services:
         NEXT_PUBLIC_MAPS_API_KEY: ${NEXT_PUBLIC_MAPS_API_KEY}
     container_name: lasorianita
     restart: unless-stopped
+    environment:
+      - INSTAGRAM_ACCESS_TOKEN=${INSTAGRAM_ACCESS_TOKEN}
+      - INSTAGRAM_BUSINESS_ID=${INSTAGRAM_BUSINESS_ID}
     ports:
       - "3000:3000"
     networks:
