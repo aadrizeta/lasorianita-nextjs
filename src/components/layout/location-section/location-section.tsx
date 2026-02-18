@@ -17,9 +17,16 @@ function Location() {
                 <Image src="/icons/ubicacion-borde.svg" alt="Ubicación" width={24} height={24} />
                 Ubicación
               </span>
-              <Link href="https://www.google.com/maps/dir/?api=1&destination=Panaderia+La+Sorianita&destination_place_id=ChIJt29mtTMmQg0RQ42XzKAjwtUf" className='hover:text-soria-red flex items-center gap-2'>
-                Glorieta Sta. María de la Cabeza, 9, Arganzuela, 28045 Madrid ⇗
-              </Link>
+              <p>Glorieta Sta. María de la Cabeza, 9, Arganzuela, 28045 Madrid</p>
+              <span className='text-soria-red font-bold text-lg underline underline-offset-2 hover:opacity-70 transition-opacity'>
+                <Link
+                  href="https://www.google.com/maps/dir/?api=1&destination=Panaderia+La+Sorianita&destination_place_id=ChIJt29mtTMmQg0RQ42XzKAjwtUf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Cómo llegar
+                </Link>
+              </span>
             </div>
             <div className='flex flex-col gap-2'>
               <div className='flex flex-col gap-1'>

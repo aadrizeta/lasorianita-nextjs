@@ -5,49 +5,21 @@ import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useEffect, useRef } from 'react';
 
 const BUSINESS_LOCATION = { lat: 40.40025075221877, lng: -3.6992860428748027 };
+const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${BUSINESS_LOCATION.lat},${BUSINESS_LOCATION.lng}`;
 
-const MAP_STYLES: google.maps.MapTypeStyle[] = [
-  // Ocultar POI de negocios (restaurantes, tiendas, etc.)
-  {
-    featureType: "poi.business",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI de atracciones
-  {
-    featureType: "poi.attraction",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI de gobierno
-  {
-    featureType: "poi.government",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI de lugares de culto
-  {
-    featureType: "poi.place_of_worship",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI escolares
-  {
-    featureType: "poi.school",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI deportivos
-  {
-    featureType: "poi.sports_complex",
-    stylers: [{ visibility: "off" }],
-  },
-  // Ocultar POI médicos
-  {
-    featureType: "poi.medical",
-    stylers: [{ visibility: "off" }],
-  },
-  // Conservar transporte público visible
-  {
-    featureType: "transit",
-    stylers: [{ visibility: "on" }],
-  },
-];
+const INFO_WINDOW_CONTENT = `
+  <div style="font-family: sans-serif; padding: 4px;">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <img src="/favicon.ico" alt="" style="width: 32px; height: 32px;" />
+      <div>
+        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-family: math;">Panadería La Sorianita</h3>
+        <p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">C. de Antonio López, 41, Arganzuela, 28019 Madrid</p>
+    <a href="${GOOGLE_MAPS_URL}" target="_blank" rel="noopener noreferrer"
+      style="font-size: 12px; color: #1a73e8; text-decoration: none;">
+      Abrir en Google Maps
+    </a>
+  </div>
+`;
 
 function GoogleMaps() {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -60,7 +32,8 @@ function GoogleMaps() {
     });
 
     const initMap = async () => {
-      const { Map } = await importLibrary("maps") as google.maps.MapsLibrary;
+      const { Map, InfoWindow } = await importLibrary("maps") as google.maps.MapsLibrary;
+      const { AdvancedMarkerElement } = await importLibrary("marker") as google.maps.MarkerLibrary;
 
       if (!mapRef.current) return;
 
@@ -69,14 +42,23 @@ function GoogleMaps() {
           ? { lat: 40.40134966059278, lng: -3.6992619029894174 }
           : { lat: 40.40026300780124, lng: -3.6992779962475733 },
         zoom: window.innerWidth < 1024 ? 16 : 17,
-        styles: MAP_STYLES,
+        mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
         clickableIcons: false,
+        gestureHandling: "greedy",
       });
 
-      new google.maps.Marker({
+      const marker = new AdvancedMarkerElement({
         position: BUSINESS_LOCATION,
         map,
         title: "Panadería La Sorianita",
+      });
+
+      const infoWindow = new InfoWindow({
+        content: INFO_WINDOW_CONTENT,
+      });
+
+      marker.addListener("gmp-click", () => {
+        infoWindow.open({ anchor: marker, map });
       });
     };
 
