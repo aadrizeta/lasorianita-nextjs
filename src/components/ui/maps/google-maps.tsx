@@ -5,7 +5,7 @@ import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
 import { useEffect, useRef } from 'react';
 
 const BUSINESS_LOCATION = { lat: 40.40025075221877, lng: -3.6992860428748027 };
-const GOOGLE_MAPS_URL = `https://www.google.com/maps/search/?api=1&query=${BUSINESS_LOCATION.lat},${BUSINESS_LOCATION.lng}`;
+const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/VzFZMw4iKrsyDTx17';
 
 const INFO_WINDOW_CONTENT = `
   <div style="font-family: sans-serif; padding: 4px;">
