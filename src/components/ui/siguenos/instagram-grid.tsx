@@ -14,8 +14,8 @@ function formatDate(timestamp: string): string {
 
 function Skeleton() {
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
-      {Array.from({ length: 8 }).map((_, i) => (
+    <div className="grid grid-cols-3 gap-3 md:gap-4">
+      {Array.from({ length: 9 }).map((_, i) => (
         <div key={i} className="aspect-square bg-stone-200 animate-pulse rounded-sm" />
       ))}
     </div>
@@ -49,7 +49,7 @@ export default function InstagramGrid() {
   }
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 md:gap-4">
+    <div className="grid grid-cols-3 gap-3 md:gap-4">
       {posts.map((post) => (
         <a
           key={post.id}
@@ -62,7 +62,7 @@ export default function InstagramGrid() {
             src={post.media_url}
             alt={post.caption?.slice(0, 100) || 'Post de Instagram'}
             fill
-            sizes="(max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            sizes="33vw"
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-black/0 group-hover:bg-black/40 transition-colors duration-300 flex items-end">

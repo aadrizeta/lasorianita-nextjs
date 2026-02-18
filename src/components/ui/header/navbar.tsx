@@ -7,7 +7,7 @@ import { usePathname } from 'next/navigation';
 const Links = [
   { name: 'inicio', href: '/', external: false },
   { name: 'encuéntranos', href: '/encuentranos', external: false },
-  { name: 'síguenos', href: 'https://www.instagram.com/pastelerialasorianita?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', external: true },
+  { name: 'síguenos', href: '/siguenos', external: false },
 ];
 
 export default function NavBar() {
