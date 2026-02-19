@@ -49,6 +49,7 @@ export async function POST(request: NextRequest) {
   const ip = getClientIp(request);
 
   if (!checkRateLimit(ip)) {
+    console.warn(`[solicitud-empleo] Rate limit alcanzado para IP ${ip}`);
     return NextResponse.json(
       { error: "Has enviado demasiadas solicitudes. Inténtalo más tarde." },
       { status: 429 },
@@ -74,6 +75,8 @@ export async function POST(request: NextRequest) {
     (formData.get("fecha_nacimiento") as string)?.trim() || "";
   const actualizar = formData.get("actualizar") === "true";
 
+  console.log(`[solicitud-empleo] Solicitud recibida — email: ${email} | IP: ${ip} | actualizar: ${actualizar}`);
+
   // Validate fields
   const fieldErrors = validateFields({
     nombre,
@@ -83,6 +86,7 @@ export async function POST(request: NextRequest) {
     fecha_nacimiento,
   });
   if (Object.keys(fieldErrors).length > 0) {
+    console.warn(`[solicitud-empleo] Validación fallida para ${email}:`, fieldErrors);
     return NextResponse.json({ errors: fieldErrors }, { status: 400 });
   }
 
@@ -93,6 +97,7 @@ export async function POST(request: NextRequest) {
     .get(email) as { id: number } | undefined;
 
   if (existing && !actualizar) {
+    console.log(`[solicitud-empleo] Email duplicado detectado: ${email} (id: ${existing.id})`);
     return NextResponse.json(
       { code: "EMAIL_EXISTS" },
       { status: 409 },
@@ -158,6 +163,7 @@ export async function POST(request: NextRequest) {
 
     await writeFile(filePath, buffer);
     savedPaths.push(relativePath);
+    console.log(`[solicitud-empleo] Archivo guardado: ${relativePath}`);
   }
 
   // Insert or update
@@ -168,14 +174,16 @@ export async function POST(request: NextRequest) {
         SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, telefono = ?, archivos = ?, ip_address = ?
         WHERE email = ?
       `).run(nombre, apellidos, fecha_nacimiento, telefono, JSON.stringify(savedPaths), ip, email);
+      console.log(`[solicitud-empleo] Registro actualizado en BD — email: ${email} | id: ${existing.id}`);
     } else {
-      db.prepare(`
+      const result = db.prepare(`
         INSERT INTO solicitudes_empleo (nombre, apellidos, fecha_nacimiento, email, telefono, archivos, ip_address)
         VALUES (?, ?, ?, ?, ?, ?, ?)
       `).run(nombre, apellidos, fecha_nacimiento, email, telefono, JSON.stringify(savedPaths), ip);
+      console.log(`[solicitud-empleo] Nuevo registro insertado en BD — email: ${email} | id: ${result.lastInsertRowid}`);
     }
   } catch (err) {
-    console.error("Error writing to database:", err);
+    console.error("[solicitud-empleo] Error al escribir en BD:", err);
     return NextResponse.json(
       { error: "Error al procesar la solicitud." },
       { status: 500 },
@@ -184,13 +192,13 @@ export async function POST(request: NextRequest) {
 
   // Send emails (fire-and-forget)
   if (existing && actualizar) {
-    sendUpdateEmail(email, nombre).catch((err) =>
-      console.error("Error sending update email:", err),
-    );
+    sendUpdateEmail(email, nombre)
+      .then(() => console.log(`[solicitud-empleo] Email de actualización enviado a ${email}`))
+      .catch((err) => console.error(`[solicitud-empleo] Error enviando email de actualización a ${email}:`, err));
   } else {
-    sendConfirmationEmail(email, nombre).catch((err) =>
-      console.error("Error sending confirmation email:", err),
-    );
+    sendConfirmationEmail(email, nombre)
+      .then(() => console.log(`[solicitud-empleo] Email de confirmación enviado a ${email}`))
+      .catch((err) => console.error(`[solicitud-empleo] Error enviando email de confirmación a ${email}:`, err));
     sendNotificationEmail({
       nombre,
       apellidos,
@@ -198,12 +206,15 @@ export async function POST(request: NextRequest) {
       telefono,
       fecha_nacimiento,
       archivos: savedPaths,
-    }).catch((err) => console.error("Error sending notification email:", err));
+    })
+      .then(() => console.log(`[solicitud-empleo] Email de notificación enviado a empresa`))
+      .catch((err) => console.error("[solicitud-empleo] Error enviando email de notificación a empresa:", err));
   }
 
   recordRequest(ip);
 
   const isUpdate = existing && actualizar;
+  console.log(`[solicitud-empleo] Proceso completado — ${isUpdate ? "actualización" : "nueva solicitud"} para ${email}`);
   return NextResponse.json(
     { message: isUpdate ? "Solicitud actualizada correctamente." : "Solicitud enviada correctamente.", updated: !!isUpdate },
     { status: isUpdate ? 200 : 201 },
