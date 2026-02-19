@@ -3,7 +3,7 @@ import { writeFile, mkdir } from "fs/promises";
 import path from "path";
 import crypto from "crypto";
 import { getDb } from "@/lib/db";
-import { sendConfirmationEmail, sendNotificationEmail } from "@/lib/mail";
+import { sendConfirmationEmail, sendNotificationEmail, sendUpdateEmail } from "@/lib/mail";
 import {
   validateFields,
   validateFilesCount,
@@ -183,17 +183,23 @@ export async function POST(request: NextRequest) {
   }
 
   // Send emails (fire-and-forget)
-  sendConfirmationEmail(email, nombre).catch((err) =>
-    console.error("Error sending confirmation email:", err),
-  );
-  sendNotificationEmail({
-    nombre,
-    apellidos,
-    email,
-    telefono,
-    fecha_nacimiento,
-    archivos: savedPaths,
-  }).catch((err) => console.error("Error sending notification email:", err));
+  if (existing && actualizar) {
+    sendUpdateEmail(email, nombre).catch((err) =>
+      console.error("Error sending update email:", err),
+    );
+  } else {
+    sendConfirmationEmail(email, nombre).catch((err) =>
+      console.error("Error sending confirmation email:", err),
+    );
+    sendNotificationEmail({
+      nombre,
+      apellidos,
+      email,
+      telefono,
+      fecha_nacimiento,
+      archivos: savedPaths,
+    }).catch((err) => console.error("Error sending notification email:", err));
+  }
 
   recordRequest(ip);
 

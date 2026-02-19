@@ -27,14 +27,17 @@ function validateNombre(value: string): string | undefined {
   const trimmed = value.trim();
   if (!trimmed) return "El nombre es obligatorio";
   if (trimmed.length < 2) return "El nombre debe tener al menos 2 caracteres";
-  if (trimmed.length > 100) return "El nombre no puede superar los 100 caracteres";
+  if (trimmed.length > 100)
+    return "El nombre no puede superar los 100 caracteres";
 }
 
 function validateApellidos(value: string): string | undefined {
   const trimmed = value.trim();
   if (!trimmed) return "Los apellidos son obligatorios";
-  if (trimmed.length < 2) return "Los apellidos deben tener al menos 2 caracteres";
-  if (trimmed.length > 150) return "Los apellidos no pueden superar los 150 caracteres";
+  if (trimmed.length < 2)
+    return "Los apellidos deben tener al menos 2 caracteres";
+  if (trimmed.length > 150)
+    return "Los apellidos no pueden superar los 150 caracteres";
 }
 
 function validateEmail(value: string): string | undefined {
@@ -46,7 +49,8 @@ function validateEmail(value: string): string | undefined {
 function validateTelefono(value: string): string | undefined {
   const trimmed = value.trim().replace(/\s/g, "");
   if (!trimmed) return "El teléfono es obligatorio";
-  if (!PHONE_REGEX.test(trimmed)) return "Introduce un teléfono español válido (ej: 612345678)";
+  if (!PHONE_REGEX.test(trimmed))
+    return "Introduce un teléfono español válido (ej: 612345678)";
 }
 
 function validateFechaNacimiento(value: string): string | undefined {
@@ -55,20 +59,36 @@ function validateFechaNacimiento(value: string): string | undefined {
   if (isNaN(date.getTime())) return "La fecha no es válida";
 
   const today = new Date();
-  const minAge = new Date(today.getFullYear() - 16, today.getMonth(), today.getDate());
-  if (date > minAge) return "Debes tener al menos 16 años";
+  const minAge = new Date(
+    today.getFullYear() - 18,
+    today.getMonth(),
+    today.getDate(),
+  );
+  if (date > minAge) return "Debes tener al menos 18 años";
 
-  const maxAge = new Date(today.getFullYear() - 100, today.getMonth(), today.getDate());
+  const maxAge = new Date(
+    today.getFullYear() - 100,
+    today.getMonth(),
+    today.getDate(),
+  );
   if (date < maxAge) return "La fecha de nacimiento no es válida";
 }
 
-export function validateField(name: keyof FormFields, value: string): string | undefined {
+export function validateField(
+  name: keyof FormFields,
+  value: string,
+): string | undefined {
   switch (name) {
-    case "nombre": return validateNombre(value);
-    case "apellidos": return validateApellidos(value);
-    case "email": return validateEmail(value);
-    case "telefono": return validateTelefono(value);
-    case "fecha_nacimiento": return validateFechaNacimiento(value);
+    case "nombre":
+      return validateNombre(value);
+    case "apellidos":
+      return validateApellidos(value);
+    case "email":
+      return validateEmail(value);
+    case "telefono":
+      return validateTelefono(value);
+    case "fecha_nacimiento":
+      return validateFechaNacimiento(value);
   }
 }
 
@@ -102,10 +122,15 @@ export function validateFilesCount(count: number): string | undefined {
 // Server-side magic bytes check
 export function checkMagicBytes(buffer: Buffer, mimeType: string): boolean {
   if (mimeType === "application/pdf") {
-    return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46; // %PDF
+    return (
+      buffer[0] === 0x25 &&
+      buffer[1] === 0x50 &&
+      buffer[2] === 0x44 &&
+      buffer[3] === 0x46
+    ); // %PDF
   }
   if (mimeType === "image/jpeg") {
-    return buffer[0] === 0xFF && buffer[1] === 0xD8 && buffer[2] === 0xFF;
+    return buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
   }
   return false;
 }
