@@ -4,3 +4,5 @@ ignoredBuiltDependencies:
 
 patchedDependencies:
   next: patches/next.patch
+onlyBuiltDependencies:
+  - better-sqlite3

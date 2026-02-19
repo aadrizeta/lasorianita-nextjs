@@ -10,10 +10,22 @@ services:
     environment:
       - INSTAGRAM_ACCESS_TOKEN=${INSTAGRAM_ACCESS_TOKEN}
       - INSTAGRAM_BUSINESS_ID=${INSTAGRAM_BUSINESS_ID}
+      - SMTP_HOST=${SMTP_HOST}
+      - SMTP_PORT=${SMTP_PORT}
+      - MAIL_FROM=${MAIL_FROM}
+      - MAIL_NOTIFY=${MAIL_NOTIFY}
+      - DB_PATH=/app/data/lasorianita.db
+    volumes:
+      - app-data:/app/data
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"
     networks:
       - proxy
+
+volumes:
+  app-data:
 
 networks:
   proxy:

@@ -10,7 +10,7 @@ export default function Home() {
       <div className="h-15 bg-soria-red" />
       <HeroSection />
       <ScrollStrip />
-      <div className="bg-background py-24 selection:bg-white">
+      <div className="bg-background py-10 lg:py-24 selection:bg-white">
         <h2 className='col-center gap-2 text-center text-5xl md:text-6xl lg:text-8xl'>
           <span className='text-soria-red'>Nueva Imagen</span>
           <span className='font-math italic'>Sabor de toda la vida</span>

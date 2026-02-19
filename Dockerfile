@@ -2,6 +2,7 @@ FROM node:22-alpine AS base
 
 # --- Dependencies ---
 FROM base AS deps
+RUN apk add --no-cache python3 make g++
 RUN corepack enable pnpm
 WORKDIR /app
 
@@ -36,6 +37,8 @@ RUN adduser --system --uid 1001 nextjs
 COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+RUN mkdir -p /app/data/uploads && chown -R nextjs:nodejs /app/data
 
 USER nextjs
 
