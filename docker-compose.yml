@@ -12,6 +12,8 @@ services:
       - INSTAGRAM_BUSINESS_ID=${INSTAGRAM_BUSINESS_ID}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
+      - SMTP_USER=${SMTP_USER}
+      - SMTP_PASSWORD=${SMTP_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
       - MAIL_NOTIFY=${MAIL_NOTIFY}
       - DB_PATH=/app/data/lasorianita.db

@@ -10,12 +10,22 @@ function escapeHtml(str: string): string {
 }
 
 function getTransporter() {
-  return nodemailer.createTransport({
+  const config: nodemailer.TransportOptions = {
     host: process.env.SMTP_HOST || "localhost",
     port: Number(process.env.SMTP_PORT) || 25,
     secure: false,
     tls: { rejectUnauthorized: false },
-  });
+  } as nodemailer.TransportOptions;
+
+  // Si hay credenciales configuradas (ej. Brevo), añadir autenticación
+  if (process.env.SMTP_USER && process.env.SMTP_PASSWORD) {
+    (config as Record<string, unknown>).auth = {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASSWORD,
+    };
+  }
+
+  return nodemailer.createTransport(config);
 }
 
 const mailFrom = () => process.env.MAIL_FROM || "noreply@lasorianita.es";
