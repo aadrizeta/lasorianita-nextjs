@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
   const telefono = (formData.get("telefono") as string)?.trim() || "";
   const fecha_nacimiento =
     (formData.get("fecha_nacimiento") as string)?.trim() || "";
+  const actualizar = formData.get("actualizar") === "true";
 
   // Validate fields
   const fieldErrors = validateFields({
@@ -85,6 +86,19 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ errors: fieldErrors }, { status: 400 });
   }
 
+  // Check if email already exists
+  const db = getDb();
+  const existing = db
+    .prepare("SELECT id FROM solicitudes_empleo WHERE email = ?")
+    .get(email) as { id: number } | undefined;
+
+  if (existing && !actualizar) {
+    return NextResponse.json(
+      { code: "EMAIL_EXISTS" },
+      { status: 409 },
+    );
+  }
+
   // Extract files
   const files = formData.getAll("archivos") as File[];
   const filesCountError = validateFilesCount(files.length);
@@ -95,7 +109,7 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  // Validate each file
+  // Validate and save each file
   const savedPaths: string[] = [];
   const now = new Date();
   const yearMonth = `${now.getFullYear()}/${String(now.getMonth() + 1).padStart(2, "0")}`;
@@ -106,20 +120,14 @@ export async function POST(request: NextRequest) {
   for (const file of files) {
     if (files.length > MAX_FILES) break;
 
-    // Check extension
     const ext = "." + file.name.split(".").pop()?.toLowerCase();
     if (!ALLOWED_EXTENSIONS.includes(ext)) {
       return NextResponse.json(
-        {
-          errors: {
-            archivos: `Archivo "${file.name}": solo se permiten PDF y JPEG`,
-          },
-        },
+        { errors: { archivos: `Archivo "${file.name}": solo se permiten PDF y JPEG` } },
         { status: 400 },
       );
     }
 
-    // Check MIME type
     if (!ALLOWED_MIME_TYPES.includes(file.type)) {
       return NextResponse.json(
         { errors: { archivos: `Archivo "${file.name}": tipo no permitido` } },
@@ -127,32 +135,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check size
     if (file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        {
-          errors: {
-            archivos: `Archivo "${file.name}": máximo 5MB por archivo`,
-          },
-        },
+        { errors: { archivos: `Archivo "${file.name}": máximo 5MB por archivo` } },
         { status: 400 },
       );
     }
 
-    // Read buffer and check magic bytes
     const buffer = Buffer.from(await file.arrayBuffer());
     if (!checkMagicBytes(buffer, file.type)) {
       return NextResponse.json(
-        {
-          errors: {
-            archivos: `Archivo "${file.name}": contenido no coincide con el tipo declarado`,
-          },
-        },
+        { errors: { archivos: `Archivo "${file.name}": contenido no coincide con el tipo declarado` } },
         { status: 400 },
       );
     }
 
-    // Generate safe filename
     const timestamp = Date.now();
     const random = crypto.randomBytes(8).toString("hex");
     const safeName = `${timestamp}-${random}${ext}`;
@@ -163,24 +160,22 @@ export async function POST(request: NextRequest) {
     savedPaths.push(relativePath);
   }
 
-  // Insert into database
+  // Insert or update
   try {
-    const db = getDb();
-    const stmt = db.prepare(`
-      INSERT INTO solicitudes_empleo (nombre, apellidos, fecha_nacimiento, email, telefono, archivos, ip_address)
-      VALUES (?, ?, ?, ?, ?, ?, ?)
-    `);
-    stmt.run(
-      nombre,
-      apellidos,
-      fecha_nacimiento,
-      email,
-      telefono,
-      JSON.stringify(savedPaths),
-      ip,
-    );
+    if (existing && actualizar) {
+      db.prepare(`
+        UPDATE solicitudes_empleo
+        SET nombre = ?, apellidos = ?, fecha_nacimiento = ?, telefono = ?, archivos = ?, ip_address = ?
+        WHERE email = ?
+      `).run(nombre, apellidos, fecha_nacimiento, telefono, JSON.stringify(savedPaths), ip, email);
+    } else {
+      db.prepare(`
+        INSERT INTO solicitudes_empleo (nombre, apellidos, fecha_nacimiento, email, telefono, archivos, ip_address)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+      `).run(nombre, apellidos, fecha_nacimiento, email, telefono, JSON.stringify(savedPaths), ip);
+    }
   } catch (err) {
-    console.error("Error inserting into database:", err);
+    console.error("Error writing to database:", err);
     return NextResponse.json(
       { error: "Error al procesar la solicitud." },
       { status: 500 },
@@ -202,8 +197,9 @@ export async function POST(request: NextRequest) {
 
   recordRequest(ip);
 
+  const isUpdate = existing && actualizar;
   return NextResponse.json(
-    { message: "Solicitud enviada correctamente." },
-    { status: 201 },
+    { message: isUpdate ? "Solicitud actualizada correctamente." : "Solicitud enviada correctamente.", updated: !!isUpdate },
+    { status: isUpdate ? 200 : 201 },
   );
 }

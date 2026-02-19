@@ -24,8 +24,10 @@ export default function JobForm() {
   const [privacidad, setPrivacidad] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const [wasUpdated, setWasUpdated] = useState(false);
   const [serverError, setServerError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [showUpdatePrompt, setShowUpdatePrompt] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -80,23 +82,7 @@ export default function JobForm() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setServerError("");
-
-    // Validate all fields
-    const fieldErrors = validateFields(fields);
-    const filesError = validateFilesCount(files.length);
-    if (filesError) fieldErrors.archivos = filesError;
-    if (!privacidad) fieldErrors.privacidad = "Debes aceptar la política de privacidad";
-
-    if (Object.keys(fieldErrors).length > 0) {
-      setErrors(fieldErrors);
-      return;
-    }
-
-    setSubmitting(true);
-
+  const buildFormData = (actualizar: boolean) => {
     const formData = new FormData();
     formData.append("nombre", fields.nombre.trim());
     formData.append("apellidos", fields.apellidos.trim());
@@ -106,14 +92,27 @@ export default function JobForm() {
     for (const file of files) {
       formData.append("archivos", file);
     }
+    if (actualizar) formData.append("actualizar", "true");
+    return formData;
+  };
+
+  const submitForm = async (actualizar: boolean) => {
+    setSubmitting(true);
+    setServerError("");
+    setShowUpdatePrompt(false);
 
     try {
       const res = await fetch("/api/solicitud-empleo", {
         method: "POST",
-        body: formData,
+        body: buildFormData(actualizar),
       });
 
       const data = await res.json();
+
+      if (res.status === 409 && data.code === "EMAIL_EXISTS") {
+        setShowUpdatePrompt(true);
+        return;
+      }
 
       if (!res.ok) {
         if (data.errors) {
@@ -124,12 +123,31 @@ export default function JobForm() {
         return;
       }
 
+      setWasUpdated(!!data.updated);
       setSuccess(true);
     } catch {
       setServerError("Error de conexión. Inténtalo de nuevo.");
     } finally {
       setSubmitting(false);
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setServerError("");
+    setShowUpdatePrompt(false);
+
+    const fieldErrors = validateFields(fields);
+    const filesError = validateFilesCount(files.length);
+    if (filesError) fieldErrors.archivos = filesError;
+    if (!privacidad) fieldErrors.privacidad = "Debes aceptar la política de privacidad";
+
+    if (Object.keys(fieldErrors).length > 0) {
+      setErrors(fieldErrors);
+      return;
+    }
+
+    await submitForm(false);
   };
 
   if (success) {
@@ -140,10 +158,13 @@ export default function JobForm() {
             <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
           </svg>
         </div>
-        <h2 className="font-serif text-3xl text-stone-900 mb-4">Solicitud enviada</h2>
+        <h2 className="font-serif text-3xl text-stone-900 mb-4">
+          {wasUpdated ? "Solicitud actualizada" : "Solicitud enviada"}
+        </h2>
         <p className="text-stone-600 font-sans max-w-md mx-auto leading-relaxed">
-          Hemos recibido tu solicitud correctamente. Revisaremos tu candidatura y nos pondremos
-          en contacto contigo si tu perfil encaja con nuestras necesidades.
+          {wasUpdated
+            ? "Hemos actualizado tu solicitud con los nuevos datos. Seguiremos revisando tu candidatura."
+            : "Hemos recibido tu solicitud correctamente. Revisaremos tu candidatura y nos pondremos en contacto contigo si tu perfil encaja con nuestras necesidades."}
         </p>
         <p className="text-stone-500 font-sans text-sm mt-4">
           Recibirás un email de confirmación en breve.
@@ -319,6 +340,33 @@ export default function JobForm() {
       {serverError && (
         <div className="mt-4 bg-red-50 border border-red-200 rounded-sm px-4 py-3 text-sm text-red-700">
           {serverError}
+        </div>
+      )}
+
+      {/* Update prompt */}
+      {showUpdatePrompt && (
+        <div className="mt-4 bg-amber-50 border border-amber-200 rounded-sm px-4 py-4">
+          <p className="text-sm text-amber-900 font-sans font-medium mb-3">
+            Ya has enviado una solicitud con este email. ¿Quieres actualizar tus datos con la información del formulario?
+          </p>
+          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={() => submitForm(true)}
+              disabled={submitting}
+              className="bg-soria-red text-white font-sans font-medium px-5 py-2 text-sm hover:bg-red-900 transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+            >
+              {submitting ? "Actualizando..." : "Sí, actualizar"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowUpdatePrompt(false)}
+              disabled={submitting}
+              className="border border-stone-300 text-stone-700 font-sans font-medium px-5 py-2 text-sm hover:bg-stone-50 transition-colors disabled:opacity-50 cursor-pointer"
+            >
+              No, cancelar
+            </button>
+          </div>
         </div>
       )}
 
