@@ -9,8 +9,15 @@ export interface InstagramPost {
   like_count: number;
 }
 
+export interface InstagramProfile {
+  username: string;
+  name: string;
+  profile_picture_url: string;
+}
+
 export interface InstagramApiResponse {
   data: InstagramPost[];
+  profile: InstagramProfile;
   paging?: {
     cursors: { before: string; after: string };
     next?: string;

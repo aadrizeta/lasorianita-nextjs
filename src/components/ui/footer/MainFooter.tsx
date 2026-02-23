@@ -8,7 +8,7 @@ export default function MainFooter() {
       <div className='col-center text-center lg:text-start'>
         <span className='font-math text-4xl mb-6 text-soria-cream'>Endulzando tu día desde</span>
         <div className="flex flex-row gap-5 items-end justify-center">
-          <span className='text-9xl md:text-[10rem] leading-none block -mb-8 md:-mb-12 text-soria-cream font-script opacity-90 select-none'>1955</span>
+          <span className='text-8xl md:text-[10rem] leading-none block -mb-8 md:-mb-12 text-soria-cream font-script opacity-90 select-none'>1955</span>
           <span className="md:text-2xl md:top-6 md:right-46 text-xl text-soria-cream tracking-[0.3em] font-math right-4 pt-10">EST.</span>
         </div>
       </div>

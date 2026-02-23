@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import type { InstagramApiResponse, InstagramPost } from "@/types/instagram";
+import type { InstagramApiResponse } from "@/types/instagram";
 
 const GRAPH_API = "https://graph.instagram.com";
 
@@ -14,27 +14,29 @@ export async function GET() {
     );
   }
 
-  const fields =
+  const mediaFields =
     "id,caption,media_type,media_url,thumbnail_url,permalink,timestamp,like_count";
-  const url = `${GRAPH_API}/${businessId}/media?fields=${fields}&limit=12&access_token=${accessToken}`;
+  const mediaUrl = `${GRAPH_API}/${businessId}/media?fields=${mediaFields}&limit=24&access_token=${accessToken}`;
+  const profileUrl = `${GRAPH_API}/${businessId}?fields=username,name,profile_picture_url&access_token=${accessToken}`;
 
-  const res = await fetch(url, { next: { revalidate: 3600 } });
+  const [mediaRes, profileRes] = await Promise.all([
+    fetch(mediaUrl, { next: { revalidate: 3600 } }),
+    fetch(profileUrl, { next: { revalidate: 3600 } }),
+  ]);
 
-  if (!res.ok) {
-    const error = await res.text();
+  if (!mediaRes.ok || !profileRes.ok) {
+    const error = await (!mediaRes.ok ? mediaRes : profileRes).text();
     console.error("Instagram API error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch Instagram posts" },
+      { error: "Failed to fetch Instagram data" },
       { status: 502 },
     );
   }
 
-  const json: InstagramApiResponse = await res.json();
+  const [media, profile]: [
+    InstagramApiResponse,
+    { username: string; name: string; profile_picture_url: string },
+  ] = await Promise.all([mediaRes.json(), profileRes.json()]);
 
-  const posts: InstagramPost[] = json.data.filter(
-    (post) =>
-      post.media_type === "IMAGE" || post.media_type === "CAROUSEL_ALBUM",
-  );
-
-  return NextResponse.json({ data: posts });
+  return NextResponse.json({ data: media.data, profile });
 }

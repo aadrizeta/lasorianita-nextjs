@@ -192,6 +192,30 @@
     animation: carouselZoom 5s ease-out forwards;
   }
   /* ============================================= */
+  /* ============ INSTAGRAM FEED ================= */
+  /* ============================================= */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.3s ease-out both;
+  }
+  @keyframes slideInFromRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes slideInFromLeft {
+    from { opacity: 0; transform: translateX(-40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  .animate-slide-in-right {
+    animation: slideInFromRight 0.35s ease-out both;
+  }
+  .animate-slide-in-left {
+    animation: slideInFromLeft 0.35s ease-out both;
+  }
+  /* ============================================= */
   /* ============ FORM COMPONENTS ================ */
   /* ============================================= */
   .form-label {

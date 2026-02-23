@@ -167,7 +167,7 @@ export default function JobForm() {
             : "Hemos recibido tu solicitud correctamente. Revisaremos tu candidatura y nos pondremos en contacto contigo si tu perfil encaja con nuestras necesidades."}
         </p>
         <p className="text-stone-500 font-sans text-sm mt-4">
-          Recibirás un email de confirmación en breve.
+          Recibirás un email de confirmación en breve. Si no ves el email de confirmación comprueba tu carpeta de spam o promociones.
         </p>
       </div>
     );
