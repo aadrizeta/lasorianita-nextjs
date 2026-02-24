@@ -18,6 +18,21 @@ docker build -t lasorianita .
 docker run -p 3000:3000 lasorianita
 ```
 
+## Docker en máquina de desarrollo (sin Traefik)
+
+El `docker-compose.yml` está configurado para producción y depende de una red externa `proxy` creada por Traefik. En una máquina de desarrollo se usa `docker-compose.dev.yml` para sobreescribir esa configuración sin modificar el archivo original:
+
+```bash
+docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+
+El archivo `docker-compose.dev.yml` aplica dos cambios sobre la config de producción:
+
+- Convierte la red `proxy` de externa a local (no requiere Traefik)
+- Elimina `host-gateway` de `extra_hosts` (innecesario en Mac con Docker Desktop)
+
+La aplicación queda disponible en [http://localhost:3000](http://localhost:3000).
+
 ## Despliegue en VPS
 
 El proyecto se despliega automaticamente en el VPS con cada push a `main` mediante GitHub Actions.
