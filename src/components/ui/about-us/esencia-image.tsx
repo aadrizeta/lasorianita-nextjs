@@ -6,8 +6,8 @@ export default function EsenciaImage() {
       <div className="relative aspect-4/5 w-full overflow-hidden shadow-xl">
         {/* <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/18df92cd-f3aa-4a89-8520-2c61b267e1d1_1600w.jpg" alt="Pan rústico detalle" className="w-full h-full object-contain"/> */}
         <Image
-          src="/images/croissants-media-luna.webp"
-          alt="Croissants | La Sorianita"
+          src="/images/local/imagen-local-recortada2.jpg"
+          alt="Obrador local | La Sorianita"
           width={384}
           height={700}
           loading="lazy"

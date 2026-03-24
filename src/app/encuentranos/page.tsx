@@ -10,10 +10,10 @@ function Encuentranos() {
           className={`absolute inset-0 transition-opacity duration-700 ease-in-out`}
         >
           <Image
-            src="/images/tarta-de-frutas.webp"
+            src="/images/local/cartel-la-sorianita.webp"
             alt="Banner mostrador"
             fill
-            className="object-cover object-[50%_75%]"
+            className="object-cover object-[50%_35%]"
             sizes="100vw"
             quality={85}
           />
