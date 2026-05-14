@@ -13,20 +13,28 @@ jobs:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
+          port: 2222 # <--- CAMBIO OBLIGATORIO: Tu nuevo puerto SSH
           script: |
             cd ${{ secrets.VPS_APP_DIR }}
+
             git config --global --add safe.directory ${{ secrets.VPS_APP_DIR }}
+
             git pull origin main
-            echo "NEXT_PUBLIC_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_MAPS_API_KEY }}" > .env
-            echo "INSTAGRAM_ACCESS_TOKEN=${{ secrets.INSTAGRAM_ACCESS_TOKEN }}" >> .env
-            echo "INSTAGRAM_BUSINESS_ID=${{ secrets.INSTAGRAM_BUSINESS_ID }}" >> .env
-            echo "NEXT_PUBLIC_MAP_ID=${{ secrets.NEXT_PUBLIC_MAP_ID }}" >> .env
-            echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
-            echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env
-            echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
-            echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
-            echo "MAIL_FROM=${{ secrets.MAIL_FROM }}" >> .env
-            echo "MAIL_NOTIFY=${{ secrets.MAIL_NOTIFY }}" >> .env
+
+            cat <<EOF > .env
+            NEXT_PUBLIC_MAPS_API_KEY=${{ secrets.NEXT_PUBLIC_MAPS_API_KEY }}
+            INSTAGRAM_ACCESS_TOKEN=${{ secrets.INSTAGRAM_ACCESS_TOKEN }}
+            INSTAGRAM_BUSINESS_ID=${{ secrets.INSTAGRAM_BUSINESS_ID }}
+            NEXT_PUBLIC_MAP_ID=${{ secrets.NEXT_PUBLIC_MAP_ID }}
+            SMTP_HOST=${{ secrets.SMTP_HOST }}
+            SMTP_PORT=${{ secrets.SMTP_PORT }}
+            SMTP_USER=${{ secrets.SMTP_USER }}
+            SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}
+            MAIL_FROM=${{ secrets.MAIL_FROM }}
+            MAIL_NOTIFY=${{ secrets.MAIL_NOTIFY }}
+            EOF
+
             docker compose down
             docker compose up -d --build
+
             docker image prune -f
