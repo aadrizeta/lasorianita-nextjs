@@ -6,12 +6,13 @@ RUN apk add --no-cache python3 make g++
 RUN corepack enable pnpm
 WORKDIR /app
 
-# Copiar archivos de configuración
+# Copiar archivos de configuración (incluyendo .pnpmrc)
+COPY .pnpmrc ./
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY patches ./patches
 
-# Instalar dependencias permitiendo explícitamente los scripts de build
-RUN pnpm install --frozen-lockfile --ignore-scripts=false
+# Instalar dependencias
+RUN pnpm install --frozen-lockfile
 
 # --- Build ---
 FROM base AS builder
