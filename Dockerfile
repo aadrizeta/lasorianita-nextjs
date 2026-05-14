@@ -8,7 +8,8 @@ WORKDIR /app
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY patches ./patches
-RUN pnpm install --frozen-lockfile
+RUN pnpm config set enable-pre-post-scripts true && \
+ pnpm install --frozen-lockfile
 
 # --- Build ---
 FROM base AS builder
