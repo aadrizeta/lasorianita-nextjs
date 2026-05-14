@@ -6,10 +6,15 @@ RUN apk add --no-cache python3 make g++
 RUN corepack enable pnpm
 WORKDIR /app
 
+# Copiar archivos de configuración
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY patches ./patches
-RUN pnpm config set enable-pre-post-scripts true && \
- pnpm install --frozen-lockfile
+
+# Crear .npmrc para habilitar scripts de build nativos
+RUN echo "enable-pre-post-scripts=true" > .npmrc
+
+# Instalar dependencias
+RUN pnpm install --frozen-lockfile
 
 # --- Build ---
 FROM base AS builder
