@@ -10,11 +10,8 @@ WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY patches ./patches
 
-# Crear .npmrc para habilitar scripts de build nativos
-RUN echo "enable-pre-post-scripts=true" > .npmrc
-
-# Instalar dependencias
-RUN pnpm install --frozen-lockfile
+# Instalar dependencias permitiendo explícitamente los scripts de build
+RUN pnpm install --frozen-lockfile --ignore-scripts=false
 
 # --- Build ---
 FROM base AS builder
