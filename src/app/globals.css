@@ -67,7 +67,7 @@
       height: 5rem;
     }
   }
-  .ig-header-button{
+  .catalogo-header-button{
     @apply bg-soria-red text-white text-sm font-medium px-6 py-2.5 hover:bg-red-900 cursor-pointer transition-all shadow-sm inline-block rounded-xs
   }
   .navlink{
@@ -192,28 +192,40 @@
     animation: carouselZoom 5s ease-out forwards;
   }
   /* ============================================= */
-  /* ============ INSTAGRAM FEED ================= */
+  /* ============== CATÁLOGO ===================== */
   /* ============================================= */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(6px); }
-    to   { opacity: 1; transform: translateY(0); }
+  .tarjeta-categoria{
+    @apply w-full bg-white border border-stone-200/80 overflow-hidden transition-all duration-500
+      hover:shadow-xl hover:-translate-y-1 hover:border-stone-300;
   }
-  .animate-fade-in {
-    animation: fadeIn 0.3s ease-out both;
+  .tarjeta-producto{
+    @apply w-full bg-white border border-stone-200/80 overflow-hidden transition-all duration-500
+      hover:shadow-lg hover:-translate-y-0.5 hover:border-stone-300;
   }
-  @keyframes slideInFromRight {
-    from { opacity: 0; transform: translateX(40px); }
-    to   { opacity: 1; transform: translateX(0); }
+  .enlace-catalogo{
+    @apply inline-flex items-center gap-1.5 text-xs font-medium tracking-[0.12em] uppercase;
   }
-  @keyframes slideInFromLeft {
-    from { opacity: 0; transform: translateX(-40px); }
-    to   { opacity: 1; transform: translateX(0); }
+  .etiqueta-producto{
+    @apply inline-flex items-center gap-1 border px-2 py-0.5 text-[10px] font-medium
+      uppercase tracking-[0.1em] rounded-xs backdrop-blur-sm;
   }
-  .animate-slide-in-right {
-    animation: slideInFromRight 0.35s ease-out both;
+  .chip-alergeno{
+    @apply inline-flex items-center gap-1.5 border px-2.5 py-1 text-xs rounded-xs;
   }
-  .animate-slide-in-left {
-    animation: slideInFromLeft 0.35s ease-out both;
+  .chip-filtro{
+    @apply inline-flex items-center gap-1.5 border px-3 py-1.5 text-xs font-medium
+      rounded-xs cursor-pointer transition-colors duration-200;
+  }
+  .panel-filtros{
+    @apply flex flex-col gap-4 border border-stone-200/80 bg-white p-5;
+  }
+  .boton-limpiar{
+    @apply text-xs text-soria-red underline underline-offset-4 cursor-pointer
+      hover:text-red-900 transition-colors;
+  }
+  .aviso-catalogo{
+    @apply flex items-start gap-2.5 bg-soria-cream/40 border-l-2 border-soria-red
+      px-4 py-3 text-sm text-stone-700;
   }
   /* ============================================= */
   /* ============ FORM COMPONENTS ================ */

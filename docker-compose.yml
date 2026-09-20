@@ -1,15 +1,18 @@
+# SOLO PARA DESARROLLO LOCAL.
+#
+# La produccion se despliega en Coolify con el build pack "Dockerfile", que
+# ignora este archivo por completo: el dominio, el proxy, el puerto, el volumen
+# persistente y las variables se configuran en su interfaz. Ver DEPLOY.md.
+#
+# Uso local:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
 services:
   app:
     build:
       context: .
-      args:
-        NEXT_PUBLIC_MAPS_API_KEY: ${NEXT_PUBLIC_MAPS_API_KEY}
-        NEXT_PUBLIC_MAP_ID: ${NEXT_PUBLIC_MAP_ID}
     container_name: lasorianita
     restart: unless-stopped
     environment:
-      - INSTAGRAM_ACCESS_TOKEN=${INSTAGRAM_ACCESS_TOKEN}
-      - INSTAGRAM_BUSINESS_ID=${INSTAGRAM_BUSINESS_ID}
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}

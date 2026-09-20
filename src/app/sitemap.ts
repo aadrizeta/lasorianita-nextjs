@@ -1,9 +1,16 @@
 import type { MetadataRoute } from "next";
+import { getCategorias, getProductos } from "@/lib/catalogo";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://lasorianita.es";
+const baseUrl = "https://lasorianita.es";
 
-  return [
+/**
+ * El catálogo aporta ahora una URL por categoría y otra por producto, así que
+ * el sitemap se genera a partir del CMS en lugar de listarlas a mano.
+ */
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [categorias, productos] = await Promise.all([getCategorias(), getProductos()]);
+
+  const estaticas: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -13,14 +20,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     {
       url: `${baseUrl}/catalogo`,
       lastModified: new Date(),
-      changeFrequency: "monthly",
-      priority: 0.8,
+      changeFrequency: "weekly",
+      priority: 0.9,
     },
     {
-      url: `${baseUrl}/siguenos`,
+      url: `${baseUrl}/encuentranos`,
       lastModified: new Date(),
-      changeFrequency: "weekly",
-      priority: 0.7,
+      changeFrequency: "monthly",
+      priority: 0.6,
     },
     {
       url: `${baseUrl}/trabaja-con-nosotros`,
@@ -35,4 +42,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
+
+  const deCategorias: MetadataRoute.Sitemap = categorias.map((categoria) => ({
+    url: `${baseUrl}/catalogo/${categoria.slug}`,
+    lastModified: new Date(),
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  // Ahora que el CMS expone date_created/date_updated, cada ficha declara su
+  // fecha real en vez de fingir que todas cambiaron hoy.
+  const deProductos: MetadataRoute.Sitemap = productos.map((producto) => ({
+    url: `${baseUrl}/catalogo/${producto.categoria}/${producto.slug}`,
+    lastModified: new Date(producto.date_updated ?? producto.date_created ?? Date.now()),
+    changeFrequency: "monthly",
+    priority: 0.7,
+  }));
+
+  return [...estaticas, ...deCategorias, ...deProductos];
 }

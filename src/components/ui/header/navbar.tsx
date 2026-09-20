@@ -1,13 +1,12 @@
 'use client';
 import Link from 'next/link';
-import IgButton from './ig-button';
+import CatalogoButton from './catalogo-button';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';
 
 const Links = [
   { name: 'inicio', href: '/', external: false },
   { name: 'encuéntranos', href: '/encuentranos', external: false },
-  { name: 'síguenos', href: '/siguenos', external: false },
 ];
 
 export default function NavBar() {
@@ -28,16 +27,7 @@ export default function NavBar() {
           );
         })}
       </ul>
-      {/* <Link href="/">
-        <p className='navlink'>inicio</p>
-      </Link>
-      <Link href="/encuentranos">
-        <p className='navlink'>encuéntranos</p>
-      </Link>
-      <Link href="https://www.instagram.com/pastelerialasorianita?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==">
-        <p className='navlink'>Síguenos</p>
-      </Link> */}
-      <IgButton />
+      <CatalogoButton />
     </nav>
   );
 }

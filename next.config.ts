@@ -11,11 +11,8 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: "https",
-        hostname: "**.cdninstagram.com",
-      },
-      {
-        protocol: "https",
-        hostname: "**.fbcdn.net",
+        hostname: "cms.pacomerlos.com",
+        pathname: "/assets/**",
       },
     ],
   },

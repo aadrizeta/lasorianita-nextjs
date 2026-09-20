@@ -31,14 +31,9 @@ export default function MainFooter() {
             </Link>
           </div>
           <div className='font-sans text-soria-cream'>
-            <Link className="flex flex-row gap-5" href="https://www.instagram.com/pastelerialasorianita/" target="_blank">
-              <Image src="/icons/icono-instagram.svg" alt="Instagram" width={24} height={24} />
-              <span className="text-xl hover:text-white hover:underline transition-colors">@pastelerialasorianita</span>
-            </Link>
-          </div>
-          {/* <div className='font-sans text-soria-cream'>
             <Link className="flex flex-row gap-5" href="/trabaja-con-nosotros">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+              {/* Decorativo: el texto del enlace ya lo nombra. */}
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
                 <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" />
                 <circle cx="9" cy="7" r="4" />
                 <line x1="19" y1="8" x2="19" y2="14" />
@@ -46,7 +41,7 @@ export default function MainFooter() {
               </svg>
               <span className="text-xl hover:text-white hover:underline transition-colors">Trabaja con nosotros</span>
             </Link>
-          </div> */}
+          </div>
         </div>
 
         <span className='text-xs text-soria-cream font-sans flex justify-between'>© 2024 LA SORIANITA | OBRADOR ARTESANAL</span>

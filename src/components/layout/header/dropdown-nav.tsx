@@ -18,12 +18,6 @@ const Links = [
     activeIcon: '/icons/ubicacion-relleno.svg',
   },
   {
-    name: 'Síguenos',
-    href: '/siguenos',
-    icon: '/icons/instagram-borde.svg',
-    activeIcon: '/icons/instagram-relleno.svg',
-  },
-  {
     name: 'Catálogo',
     href: '/catalogo',
     icon: '/icons/catalogo-borde.svg',

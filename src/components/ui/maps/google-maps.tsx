@@ -1,73 +1,31 @@
-/// <reference types="google.maps" />
-'use client'
+/**
+ * Mapa de la tienda mediante el embebido de Google Maps.
+ *
+ * Sustituye a la integración anterior con la JS API (@googlemaps/js-api-loader),
+ * que exigía clave de API y `mapId` propagados hasta el build de Docker. El
+ * embebido no necesita credenciales, se renderiza en servidor y carga en
+ * diferido, así que no bloquea la interacción de la página.
+ */
 
-import { importLibrary, setOptions } from "@googlemaps/js-api-loader";
-import { useEffect, useRef } from 'react';
-
-const BUSINESS_LOCATION = { lat: 40.40025075221877, lng: -3.6992860428748027 };
-const GOOGLE_MAPS_URL = 'https://maps.app.goo.gl/VzFZMw4iKrsyDTx17';
-
-const INFO_WINDOW_CONTENT = `
-  <div style="font-family: sans-serif; padding: 4px;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <img src="/favicon.ico" alt="" style="width: 32px; height: 32px;" />
-      <div>
-        <h3 style="margin: 0 0 4px 0; font-size: 16px; font-family: math;">Panadería La Sorianita</h3>
-        <p style="margin: 0 0 8px 0; font-size: 13px; color: #666;">C. de Antonio López, 41, Arganzuela, 28019 Madrid</p>
-    <a href="${GOOGLE_MAPS_URL}" target="_blank" rel="noopener noreferrer"
-      style="font-size: 12px; color: #1a73e8; text-decoration: none;">
-      Abrir en Google Maps
-    </a>
-  </div>
-`;
+/** URL del embebido generada desde la ficha de Google Business. */
+const URL_EMBEBIDO =
+  'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3038.386316726973!2d-3.7026179343444126!3d40.40029190482138!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd422633b5666fb7%3A0xd5c223a0cc978d43!2sPanader%C3%ADa%20La%20Sorianita!5e0!3m2!1ses!2ses!4v1789933611526!5m2!1ses!2ses';
 
 function GoogleMaps() {
-  const mapRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    setOptions({
-      key: process.env.NEXT_PUBLIC_MAPS_API_KEY as string,
-      language: "es",
-      v: "weekly",
-    });
-
-    const initMap = async () => {
-      const { Map, InfoWindow } = await importLibrary("maps") as google.maps.MapsLibrary;
-      const { AdvancedMarkerElement } = await importLibrary("marker") as google.maps.MarkerLibrary;
-
-      if (!mapRef.current) return;
-
-      const map = new Map(mapRef.current, {
-        center: window.innerWidth < 1024
-          ? { lat: 40.40134966059278, lng: -3.6992619029894174 }
-          : { lat: 40.40026300780124, lng: -3.6992779962475733 },
-        zoom: window.innerWidth < 1024 ? 16 : 17,
-        mapId: process.env.NEXT_PUBLIC_MAP_ID as string,
-        clickableIcons: false,
-        gestureHandling: "greedy",
-      });
-
-      const marker = new AdvancedMarkerElement({
-        position: BUSINESS_LOCATION,
-        map,
-        title: "Panadería La Sorianita",
-      });
-
-      const infoWindow = new InfoWindow({
-        content: INFO_WINDOW_CONTENT,
-      });
-
-      marker.addListener("gmp-click", () => {
-        infoWindow.open({ anchor: marker, map });
-      });
-    };
-
-    initMap();
-  }, []);
-
   return (
-    <div ref={mapRef} className="w-full h-100 lg:h-150 rounded-2xl drop-shadow-xl" />
+    <div className="w-full h-100 lg:h-150 rounded-2xl drop-shadow-xl overflow-hidden">
+      <iframe
+        src={URL_EMBEBIDO}
+        // Un iframe necesita nombre accesible: sin él, un lector de pantalla
+        // sólo anuncia "marco".
+        title="Mapa de situación de Panadería La Sorianita"
+        className="w-full h-full border-0"
+        allowFullScreen
+        loading="lazy"
+        referrerPolicy="strict-origin-when-cross-origin"
+      />
+    </div>
   );
 }
 
-export default GoogleMaps
+export default GoogleMaps;
