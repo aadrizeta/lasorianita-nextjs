@@ -9,9 +9,16 @@ cuyo workflow se ha eliminado.
 - **Source:** el repositorio remoto, rama `main`
 - **Puerto del contenedor:** `3000`
 
-`docker-compose.yml` y `docker-compose.dev.yml` ya **no intervienen en
-producción**: quedan sólo para levantar el proyecto en local. Coolify aporta su
+`docker-compose.yml` ya **no interviene en producción**: queda sólo para
+levantar en local la misma imagen que corre desplegada. Coolify aporta su
 propio proxy, red y gestión de volúmenes.
+
+> [!IMPORTANT]
+> El build pack debe estar en **Dockerfile**. Si queda en *Docker Compose*,
+> Coolify lee el `docker-compose.yml` del repositorio y el despliegue falla con
+> `network proxy declared as external, but could not be found`, o peor: monta
+> `./data` dentro de `/artifacts/<uuid>`, que se recrea en cada despliegue, y
+> se pierden la base de solicitudes y los CV.
 
 ---
 
@@ -160,8 +167,8 @@ pnpm dev
 O con Docker, replicando la imagen de producción:
 
 ```bash
-docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+docker compose up --build
 ```
 
-El override de desarrollo desactiva la red `proxy` externa, que en local no
-existe.
+Necesita un `.env` en la raíz con las variables `SMTP_*` y `MAIL_*`. Los datos
+quedan en `./data`, que está en `.gitignore` porque contiene CV de candidatos.

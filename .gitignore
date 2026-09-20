@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# datos locales: base SQLite de solicitudes y CV subidos.
+# Son datos personales de candidatos: nunca deben entrar en el repositorio.
+/data

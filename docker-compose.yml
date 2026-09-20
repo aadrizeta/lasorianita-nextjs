@@ -1,35 +1,39 @@
 # SOLO PARA DESARROLLO LOCAL.
 #
-# La produccion se despliega en Coolify con el build pack "Dockerfile", que
-# ignora este archivo por completo: el dominio, el proxy, el puerto, el volumen
-# persistente y las variables se configuran en su interfaz. Ver DEPLOY.md.
+# La producción se despliega en Coolify con el build pack "Dockerfile", que
+# ignora este archivo por completo: dominio, proxy, puerto expuesto, volumen
+# persistente y variables se configuran en su interfaz. Ver DEPLOY.md.
 #
-# Uso local:
-#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+# Este compose existe para levantar en local la MISMA imagen que corre en
+# producción, y así detectar antes problemas que `pnpm dev` no enseña (build
+# de standalone, compilación nativa de better-sqlite3, permisos del volumen).
+#
+#   docker compose up --build
+#
+# Requiere un .env en la raíz con las variables SMTP_* y MAIL_*.
+
 services:
   app:
     build:
       context: .
+      dockerfile: Dockerfile
     container_name: lasorianita
     restart: unless-stopped
     environment:
+      - DB_PATH=/app/data/lasorianita.db
       - SMTP_HOST=${SMTP_HOST}
       - SMTP_PORT=${SMTP_PORT}
       - SMTP_USER=${SMTP_USER}
       - SMTP_PASSWORD=${SMTP_PASSWORD}
       - MAIL_FROM=${MAIL_FROM}
       - MAIL_NOTIFY=${MAIL_NOTIFY}
-      - DB_PATH=/app/data/lasorianita.db
     volumes:
+      # En local se monta una carpeta del proyecto para poder abrir la base
+      # SQLite y los CV sin entrar al contenedor. En Coolify esto es un volumen
+      # persistente declarado en su interfaz sobre /app/data.
       - ./data:/app/data
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     ports:
       - "3000:3000"
-    networks:
-      - proxy
-
-networks:
-  proxy:
-    external: true
-    name: proxy
+    extra_hosts:
+      # Permite llegar a un SMTP que corra en la máquina anfitriona.
+      - "host.docker.internal:host-gateway"

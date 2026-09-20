@@ -1,7 +1,0 @@
-services:
-  app:
-    extra_hosts: !reset []
-
-networks:
-  proxy:
-    external: false
