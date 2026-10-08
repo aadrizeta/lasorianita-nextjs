@@ -1,0 +1,762 @@
+{
+  "info": {
+    "name": "La Sorianita · CMS Directus",
+    "description": "Llamadas que la web de La Sorianita (Next.js) hace al CMS Directus en `{{base_url}}`.\n\n- Acceso **sólo lectura** con el rol público: no se envía token.\n- Todo cuelga de `/items/<colección>` y la respuesta siempre viene envuelta en `{ data }`.\n- El código equivalente está en `src/lib/directus.ts` (transporte) y `src/lib/catalogo.ts` (consultas y normalización).\n- Next cachea estas respuestas 300 s (tag `catalogo`).\n\nLas peticiones con tabla tienen la pestaña **Visualize** en la respuesta.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "0 · Estado del CMS",
+      "item": [
+        {
+          "name": "Ping",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/server/ping",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "server",
+                "ping"
+              ]
+            },
+            "description": "Comprueba que la instancia de Directus está levantada. Debe devolver `pong`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "pm.test('Devuelve pong', () => pm.expect(pm.response.text()).to.include('pong'));"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "1 · Llamadas que hace la web",
+      "description": "Exactamente las consultas de `src/lib/catalogo.ts`. Con estas cuatro se pinta todo el sitio.",
+      "item": [
+        {
+          "name": "Categorías publicadas  · getCategorias()",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/categorias?filter[status][_eq]=published&sort=sort&limit=-1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "categorias"
+              ],
+              "query": [
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published",
+                  "description": "Sólo publicadas"
+                },
+                {
+                  "key": "sort",
+                  "value": "sort",
+                  "description": "Orden definido en el CMS"
+                },
+                {
+                  "key": "limit",
+                  "value": "-1",
+                  "description": "Sin paginación"
+                }
+              ]
+            },
+            "description": "Usada en el menú, la portada y `/catalogo`. Guarda el primer slug en `categoria_slug`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "pm.test('Hay categorías', () => pm.expect(json.data.length).to.be.above(0));",
+                  "if (json.data[0]) pm.environment.set('categoria_slug', json.data[0].slug);",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"id\",\"sort\",\"nombre\",\"slug\",\"color_acento\",\"icono\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Catálogo completo · getProductos()",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[status][_eq]=published&sort=categoria.sort,sort&limit=-1&fields=id,status,sort,nombre,slug,descripcion_corta,precio_orientativo,unidad_precio,formato,peso_aprox_g,destacado,vegano,imagen,date_created,date_updated,categoria.nombre,categoria.slug,alergenos.alergenos_id.codigo,trazas.alergenos_id.codigo",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published",
+                  "description": "El rol público NO filtra borradores: hay que pedirlo explícitamente"
+                },
+                {
+                  "key": "sort",
+                  "value": "categoria.sort,sort",
+                  "description": "Por categoría y luego por orden interno"
+                },
+                {
+                  "key": "limit",
+                  "value": "-1",
+                  "description": "Sin paginación"
+                },
+                {
+                  "key": "fields",
+                  "value": "id,status,sort,nombre,slug,descripcion_corta,precio_orientativo,unidad_precio,formato,peso_aprox_g,destacado,vegano,imagen,date_created,date_updated,categoria.nombre,categoria.slug,alergenos.alergenos_id.codigo,trazas.alergenos_id.codigo",
+                  "description": "Sólo lo que necesita la rejilla; relaciones expandidas con notación de punto"
+                }
+              ]
+            },
+            "description": "Se pide **una vez** y la web filtra en memoria: productos por categoría, destacados y relacionados salen de aquí.\n\nPeculiaridades de la respuesta cruda (normalizadas en `catalogo.ts`):\n- `precio_orientativo` llega como string (`\"4.50\"`).\n- `destacado` / `vegano` llegan como `0 | 1`.\n- `alergenos` llega con doble salto por la tabla puente: `[{ alergenos_id: { codigo } }]`."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const p = json.data[0];",
+                  "pm.test('Precio llega como string (se convierte en catalogo.ts)', () => { if (p && p.precio_orientativo != null) pm.expect(p.precio_orientativo).to.be.a('string'); });",
+                  "pm.test('Booleanos llegan como 0/1', () => { if (p) pm.expect([0, 1, true, false, null]).to.include(p.destacado); });",
+                  "pm.test('Categoría expandida (nombre + slug)', () => { if (p) pm.expect(p.categoria).to.have.keys('nombre', 'slug'); });",
+                  "if (p) pm.environment.set('producto_slug', p.slug);",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"categoria.nombre\",\"precio_orientativo\",\"unidad_precio\",\"destacado\",\"vegano\",\"alergenos\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Ficha de producto · getProducto(slug)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[slug][_eq]={{producto_slug}}&filter[status][_eq]=published&limit=1&fields=*,categoria.nombre,categoria.slug,alergenos.alergenos_id.codigo,alergenos.alergenos_id.nombre,trazas.alergenos_id.codigo,galeria.directus_files_id",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[slug][_eq]",
+                  "value": "{{producto_slug}}",
+                  "description": "Variable del entorno"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "limit",
+                  "value": "1"
+                },
+                {
+                  "key": "fields",
+                  "value": "*,categoria.nombre,categoria.slug,alergenos.alergenos_id.codigo,alergenos.alergenos_id.nombre,trazas.alergenos_id.codigo,galeria.directus_files_id",
+                  "description": "Todos los campos + relaciones (alérgenos con nombre, galería)"
+                }
+              ]
+            },
+            "description": "Página `/catalogo/[categoria]/[slug]`. Si `data` viene vacío, la web devuelve 404."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "pm.test('Devuelve un único producto', () => pm.expect(json.data.length).to.eql(1));",
+                  "pm.test('Incluye descripción e ingredientes', () => pm.expect(json.data[0]).to.include.keys('descripcion', 'ingredientes'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"slug\",\"categoria.nombre\",\"precio_orientativo\",\"formato\",\"peso_aprox_g\",\"ingredientes\",\"alergenos\",\"trazas\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Alérgenos · getAlergenos()",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/alergenos?sort=sort&limit=-1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "alergenos"
+              ],
+              "query": [
+                {
+                  "key": "sort",
+                  "value": "sort"
+                },
+                {
+                  "key": "limit",
+                  "value": "-1"
+                }
+              ]
+            },
+            "description": "Diccionario código → nombre/icono. Los productos sólo guardan el código."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"id\",\"codigo\",\"nombre\",\"icono\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "2 · Demostraciones",
+      "description": "Consultas extra para enseñar capacidades de la API de Directus durante la presentación.",
+      "item": [
+        {
+          "name": "Productos de una categoría (filtro por relación)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[categoria][slug][_eq]={{categoria_slug}}&filter[status][_eq]=published&sort=sort&fields=nombre,slug,precio_orientativo,unidad_precio",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[categoria][slug][_eq]",
+                  "value": "{{categoria_slug}}",
+                  "description": "Filtra a través de la relación M2O"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "sort",
+                  "value": "sort"
+                },
+                {
+                  "key": "fields",
+                  "value": "nombre,slug,precio_orientativo,unidad_precio"
+                }
+              ]
+            },
+            "description": "La web lo resuelve en memoria, pero Directus también puede filtrar por campos de una relación."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"slug\",\"precio_orientativo\",\"unidad_precio\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Productos destacados",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[destacado][_eq]=true&filter[status][_eq]=published&fields=nombre,slug,categoria.nombre",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[destacado][_eq]",
+                  "value": "true"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "fields",
+                  "value": "nombre,slug,categoria.nombre"
+                }
+              ]
+            },
+            "description": "Los que salen en la portada (la web los saca del listado completo)."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"slug\",\"categoria.nombre\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Productos veganos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[vegano][_eq]=true&filter[status][_eq]=published&fields=nombre,categoria.nombre",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[vegano][_eq]",
+                  "value": "true"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "fields",
+                  "value": "nombre,categoria.nombre"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"categoria.nombre\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Búsqueda de texto",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?search={{busqueda}}&filter[status][_eq]=published&fields=nombre,slug,descripcion_corta",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "{{busqueda}}",
+                  "description": "Busca en todos los campos de texto"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "fields",
+                  "value": "nombre,slug,descripcion_corta"
+                }
+              ]
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"slug\",\"descripcion_corta\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Recuento de productos por categoría (aggregate)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?aggregate[count]=*&groupBy[]=categoria&filter[status][_eq]=published",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "aggregate[count]",
+                  "value": "*"
+                },
+                {
+                  "key": "groupBy[]",
+                  "value": "categoria"
+                },
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                }
+              ]
+            },
+            "description": "Agregaciones en el propio CMS, sin descargar los productos."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"categoria\",\"count\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Paginación (limit + page + meta)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?filter[status][_eq]=published&fields=nombre,slug&limit=5&page=1&meta=filter_count",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "filter[status][_eq]",
+                  "value": "published"
+                },
+                {
+                  "key": "fields",
+                  "value": "nombre,slug"
+                },
+                {
+                  "key": "limit",
+                  "value": "5"
+                },
+                {
+                  "key": "page",
+                  "value": "1"
+                },
+                {
+                  "key": "meta",
+                  "value": "filter_count"
+                }
+              ]
+            },
+            "description": "`meta.filter_count` da el total para construir un paginador."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "pm.test('Devuelve 5 resultados como máximo', () => pm.expect(json.data.length).to.be.at.most(5));",
+                  "pm.test('Incluye meta.filter_count', () => pm.expect(json.meta).to.have.property('filter_count'));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Imagen transformada (/assets)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/assets/{{asset_id}}?width=800&fit=cover&quality=80&format=webp",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "assets",
+                "{{asset_id}}"
+              ],
+              "query": [
+                {
+                  "key": "width",
+                  "value": "800"
+                },
+                {
+                  "key": "fit",
+                  "value": "cover"
+                },
+                {
+                  "key": "quality",
+                  "value": "80"
+                },
+                {
+                  "key": "format",
+                  "value": "webp"
+                }
+              ]
+            },
+            "description": "Así construye `urlImagen()` las URLs que consume `next/image`: Directus redimensiona y convierte a WebP al vuelo.\n\nAhora mismo el catálogo no tiene fotos subidas (`imagen: null`), así que rellena `asset_id` con el UUID de un fichero de Directus para probarla."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "3 · Seguridad",
+      "description": "El rol público sólo puede leer.",
+      "item": [
+        {
+          "name": "Intento de escritura → 403",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/items/productos",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ]
+            },
+            "description": "Sin token, Directus rechaza cualquier creación/edición. Por eso la web no necesita credenciales.",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Producto de prueba\",\n  \"slug\": \"prueba\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Escritura bloqueada (403)', () => pm.response.to.have.status(403));"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Borradores sin filtro de estado",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/items/productos?fields=nombre,status&filter[status][_neq]=published",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "items",
+                "productos"
+              ],
+              "query": [
+                {
+                  "key": "fields",
+                  "value": "nombre,status"
+                },
+                {
+                  "key": "filter[status][_neq]",
+                  "value": "published"
+                }
+              ]
+            },
+            "description": "El rol público no oculta borradores por sí solo: por eso todas las consultas de la web añaden `filter[status][_eq]=published`. Hoy no hay borradores, así que devuelve `[]`: pasa un producto a *draft* en Directus para enseñarlo."
+          },
+          "response": [],
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Responde 200', () => pm.response.to.have.status(200));",
+                  "const json = pm.response.json();",
+                  "pm.test('Directus envuelve la respuesta en { data }', () => pm.expect(json).to.have.property('data'));",
+                  "const filas = Array.isArray(json.data) ? json.data : [json.data];",
+                  "const columnas = [\"nombre\",\"status\"];",
+                  "const get = (o, ruta) => ruta.split('.').reduce((a, k) => (a == null ? a : a[k]), o);",
+                  "const celda = (v) => Array.isArray(v) ? v.map((x) => x?.alergenos_id?.codigo ?? JSON.stringify(x)).join(', ') : (v ?? '—');",
+                  "const html = `<style>body{font-family:sans-serif;font-size:13px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ddd;padding:6px 8px;text-align:left}th{background:#f4ece1}</style>",
+                  "<p><b>${filas.length}</b> registros</p><table><tr>${columnas.map((c) => `<th>${c}</th>`).join('')}</tr>",
+                  "${filas.map((f) => `<tr>${columnas.map((c) => `<td>${celda(get(f, c))}</td>`).join('')}</tr>`).join('')}</table>`;",
+                  "pm.visualizer.set(html);"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
